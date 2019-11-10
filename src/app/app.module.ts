@@ -7,13 +7,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { AngularFireAuthModule } from '@angular/fire/auth'
 import { AngularFireModule } from '@angular/fire'
 import { AngularFirestoreModule } from '@angular/fire/firestore'
-import { MatToolbarModule, MatButtonModule } from '@angular/material/'
+import { MatToolbarModule, MatButtonModule, MatIconModule } from '@angular/material/'
 
-import { environment } from '../environments/environment'
+import { environment } from '../environments/environment';
+import { HomeComponent } from './routes/home/home.component'
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent
   ],
   imports: [
     AngularFireAuthModule,
@@ -23,7 +25,8 @@ import { environment } from '../environments/environment'
     AppRoutingModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

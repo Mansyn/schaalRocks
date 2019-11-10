@@ -27,14 +27,34 @@ $schaalRocks-theme: mat-light-theme($schaalRocks-primary, $schaalRocks-accent, $
 
 /* You can add global styles to this file, and also import other style files */
 
-html,
-body {
-  height: 100%;
+* {
+  box-sizing: border-box;
 }
 
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html,
 body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  position: relative;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: black;
+  color: whitesmoke;
+}
+
+button:focus,
+img:focus,
+.lose-outline {
+  outline: 0;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .spacer {
