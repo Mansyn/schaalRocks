@@ -1,18 +1,6 @@
 <div class="main-container">
-  <mat-toolbar color="primary">
-    <mat-toolbar-row>
-      <span style="font-size: 45px;">rock on</span>
-      <span class="spacer"></span>
-      <button *ngIf="!playing" mat-icon-button aria-label="rock" (click)="play()">
-        <mat-icon>play_arrow</mat-icon>
-      </button>
-      <button *ngIf="playing" mat-icon-button aria-label="rock" (click)="stop()">
-        <mat-icon>stop</mat-icon>
-      </button>
-    </mat-toolbar-row>
-  </mat-toolbar>
+  <div class="head">rock on</div>
   <div class="content">
-    <router-outlet></router-outlet>
   </div>
   <footer></footer>
 </div>

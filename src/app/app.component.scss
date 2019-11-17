@@ -1,9 +1,11 @@
 @import '~@angular/material/theming';
 
-.mat-toolbar {
-  background-color: map-get($mat-red, A700);
+.head {
+  font-size: 47px;
   color: whitesmoke;
   font-family: 'Jolly Lodger', cursive;
+  text-align: center;
+  margin-top: 15px;
 }
 
 .main-container {
