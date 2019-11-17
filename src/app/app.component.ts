@@ -1,5 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core'
-import { Howl, Howler } from 'howler'
+import * as Tone from 'tone'
 
 @Component({
   selector: 'app-root',
@@ -7,34 +7,18 @@ import { Howl, Howler } from 'howler'
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-  sound: Howl
-  playing: boolean
+  
+  synth:any
 
   constructor() {
-    this.playing = false
+    
   }
 
   ngAfterViewInit() {
-    let that = this
-    this.sound = new Howl({
-      src: ['audio/80s_vibe.webm'],
-      onend: function () {
-        that.end()
-      }
-    })
+    this.synth = new Tone.Synth().toMaster()
   }
 
   play() {
-    this.playing = true
-    this.sound.play()
-  }
-
-  end() {
-    this.playing = false
-  }
-
-  stop() {
-    this.playing = false
-    this.sound.stop()
+    this.synth.triggerAttackRelease("C4", "8n")
   }
 }
