@@ -1,27 +1,30 @@
-# SchaalRocks
+Firebase Realtime Database Quickstart
+=============================
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.16.
+The Firebase Database quickstart demonstrates how to connect to the Firebase Realtime Database and
+to send and retrieve data through a simple social blogging app. It will interoperate with the iOS and
+Android database quickstarts.
 
-## Development server
+Introduction
+------------
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+[Read more about Firebase Database](https://firebase.google.com/docs/database/)
 
-## Code scaffolding
+Getting Started
+---------------
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+ 1. Create your project on the [Firebase Console](https://console.firebase.google.com).
+ 1. Enable the **Google** sign-in provider in the **Authentication > SIGN-IN METHOD** tab.
+ 1. You must have the Firebase CLI installed. If you don't have it install it with `npm install -g firebase-tools` and then configure it with `firebase login`.
+ 1. On the command line run `firebase use --add` and select the Firebase project you have created.
+ 1. On the command line run `firebase serve` using the Firebase CLI tool to launch a local server.
 
-## Build
+Support
+-------
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+- [Firebase Support](https://firebase.google.com/support/)
 
-## Running unit tests
+License
+-------
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+© Google, 2016. Licensed under an [Apache-2](../LICENSE) license.
