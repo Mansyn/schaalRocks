@@ -24,4 +24,6 @@ function closeNav() {
 // Bindings on load.
 window.addEventListener('load', function () {
 
+
+
 }, false);
