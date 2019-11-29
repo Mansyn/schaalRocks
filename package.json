@@ -1,0 +1,25 @@
+{
+  "name": "schaalrocks",
+  "version": "1.0.0",
+  "description": "schaal rocks fun",
+  "main": "index.js",
+  "dependencies": {
+    "tone": "^13.8.25"
+  },
+  "devDependencies": {
+    "firebase-tools": "^7.8.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mansyn/schaalRocks.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mansyn/schaalRocks/issues"
+  },
+  "homepage": "https://github.com/Mansyn/schaalRocks#readme"
+}

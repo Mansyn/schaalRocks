@@ -28,11 +28,11 @@
   <div class="main-container">
     <div class="head">rock on</div>
     <div class="board">
-      <div></div>
+      <div ondragover="onDragOver(event);" ondrop="onDrop(event);"></div>
     </div>
     <div class="rocks">
-      <image src="/assets/rocket-ship.svg" draggable="true" />
-      <image src="/assets/blood-sample.svg" draggable="true" />
+      <image id="rocket" src="/assets/rocket-ship.svg" draggable="true" ondragstart="onDragStart(event);" />
+      <image id="blood" src="/assets/blood-sample.svg" draggable="true" ondragstart="onDragStart(event);" />
       <image src="/assets/blood-drop-on-a-hand.svg" draggable="true" />
       <image src="/assets/rocks.svg" draggable="true" />
     </div>

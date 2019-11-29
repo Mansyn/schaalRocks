@@ -43,7 +43,7 @@
     color: whitesmoke;
     font-family: 'Jolly Lodger', cursive;
     text-align: center;
-    margin-top: 15px;
+    margin: 15px 0;
   }
 
   .board {
@@ -73,6 +73,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    margin: 15px 0;
   }
 
   .rocks > * {
