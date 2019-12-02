@@ -4,12 +4,21 @@
   "description": "schaal rocks fun",
   "main": "index.js",
   "dependencies": {
+    "firebase": "^7.5.0",
     "tone": "^13.8.25"
   },
   "devDependencies": {
-    "firebase-tools": "^7.8.1"
+    "firebase-tools": "^7.8.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   },
   "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --mode development",
+    "deploy": "webpack && firebase deploy --only hosting",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
