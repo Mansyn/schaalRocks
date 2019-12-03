@@ -1,93 +1,93 @@
 * {
-    box-sizing: border-box;
-  }
-  
-  *:before,
-  *:after {
-    box-sizing: border-box;
-  }
-  
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    position: relative;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    background-color: black;
-    color: whitesmoke;
-  }
-  
-  button:focus,
-  img:focus,
-  .lose-outline {
-    outline: 0;
-  }
-  
-  .pointer {
-    cursor: pointer;
-  }
+  box-sizing: border-box;
+}
 
-  .main-container {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-image: url('/assets/splatter.svg');
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-attachment: fixed;
-  }
+*:before,
+*:after {
+  box-sizing: border-box;
+}
 
-  .head {
-    font-size: 47px;
-    color: whitesmoke;
-    font-family: 'Jolly Lodger', cursive;
-    text-align: center;
-    margin: 15px 0;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  position: relative;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: black;
+  color: whitesmoke;
+}
 
-  .board {
-    display: flex;
-    flex: 7;
-    flex-direction: row;
-    justify-content: center;
-    -webkit-align-content: stretch; 
-    align-content: stretch; 
-  }
+button:focus,
+img:focus,
+.lose-outline {
+  outline: 0;
+}
 
-  .board > * {
-    width: 80%;
-    border: 2px solid #666666;
-    -webkit-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 3px #000;
-    -ms-box-shadow: inset 0 0 3px #000;
-    box-shadow: inset 0 0 3px #000;
-  }
+.pointer {
+  cursor: pointer;
+}
 
-  .rocks {
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin: 15px 0;
-  }
+.main-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-image: url('/assets/splatter.svg');
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-attachment: fixed;
+}
 
-  .rocks > * {
-    margin: 0 10px;
-    cursor: move;
-    width: 80px;
-  }
+.head {
+  font-size: 47px;
+  color: whitesmoke;
+  font-family: 'Jolly Lodger', cursive;
+  text-align: center;
+  margin: 15px 0;
+}
 
-  [draggable] {
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    /* Required to make elements draggable in old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
-  }
+.board {
+  display: flex;
+  flex: 7;
+  flex-direction: row;
+  justify-content: center;
+  -webkit-align-content: stretch;
+  align-content: stretch;
+}
+
+.board>* {
+  width: 80%;
+  border: 2px solid #666666;
+  -webkit-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 3px #000;
+  -ms-box-shadow: inset 0 0 3px #000;
+  box-shadow: inset 0 0 3px #000;
+}
+
+#rocks {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+}
+
+#rocks>* {
+  margin: 0 10px;
+  cursor: move;
+  width: 80px;
+}
+
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}

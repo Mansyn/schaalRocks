@@ -4,12 +4,21 @@ export class Schaal {
 
     constructor(_name: string) {
         this.name = _name;
+        this.createImage('rocket');
+        this.createImage('blood');
+        this.createImage('blood-drop');
     }
 
     myName() {
         return this.name;
     }
 
+    createImage(name: string) {
+        var element = document.createElement('img');
+        element.setAttribute('src', '/assets/' + name + '.svg');
+        element.setAttribute('draggable', 'true');
+        document.getElementById('rocks').appendChild(element);
+    }
 
     onDragStart(event) {
         event
