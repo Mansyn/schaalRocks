@@ -17,6 +17,8 @@ firebase.initializeApp(firebaseConfig);
 let app = new Schaal('schaal rocks');
 console.log(app.myName() + ' starting up...');
 
+app.loadRocks();
+
 window.addEventListener('load', function () {
     app.draginit();
 }, false);
