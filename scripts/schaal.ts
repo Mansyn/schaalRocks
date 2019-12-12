@@ -18,16 +18,20 @@ export class Schaal {
         this.createRock('blood-drop')
     }
 
-    private dragenter = (event) => {
+    private dragEnter = (event) => {
         if (event.target.className == "dropzone") {
             event.currentTarget.style.background = 'rgba(24, 23, 23, 0.9)'
         }
     }
 
-    private dragleave = (event) => {
+    private dragLeave = (event) => {
         if (event.target.className == "dropzone") {
             event.currentTarget.style.background = 'rgba(24, 23, 23, 0.65)'
         }
+    }
+
+    private dragOver = (event) => {
+        event.preventDefault()
     }
 
     private drop = (event) => {
@@ -54,8 +58,9 @@ export class Schaal {
     private createDrop() {
         var zone = document.createElement('div')
         zone.setAttribute('class', 'dropzone')
-        zone.ondragenter = this.dragenter
-        zone.ondragleave = this.dragleave
+        zone.ondragenter = this.dragEnter
+        zone.ondragleave = this.dragLeave
+        zone.ondragover = this.dragOver
         zone.ondrop = this.drop
         document.getElementById('board').appendChild(zone)
     }
