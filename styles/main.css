@@ -46,7 +46,7 @@ img:focus,
   margin: 15px 0;
 }
 
-.board {
+#board {
   display: flex;
   flex: 7;
   flex-direction: row;
@@ -55,7 +55,7 @@ img:focus,
   align-content: stretch;
 }
 
-.board>* {
+#board>* {
   width: 80%;
   border: 2px solid #666666;
   -webkit-border-radius: 10px;
