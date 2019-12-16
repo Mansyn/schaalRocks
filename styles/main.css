@@ -29,9 +29,11 @@ img:focus,
 }
 
 .main-container {
-  min-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  place-content: stretch flex-start;
+  align-items: stretch;
   background-image: url('/assets/splatter.svg');
   background-repeat: no-repeat;
   background-position: center bottom;
@@ -40,10 +42,13 @@ img:focus,
 
 .head {
   font-size: 47px;
+  height: 90px;
   color: whitesmoke;
+  flex-direction: row;
+  display: flex;
+  place-content: center;
+  align-items: center;
   font-family: 'Jolly Lodger', cursive;
-  text-align: center;
-  margin: 15px 0;
 }
 
 #board {
@@ -57,19 +62,27 @@ img:focus,
 
 .dropzone {
   width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   border: 10px solid rgb(105, 7, 7);
   font-size: 2.5rem;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   background-color: rgba(24, 23, 23, 0.65);
 }
 
+.dropzone .rock {
+  margin: 0 20px;
+}
+
 #rocks {
-  display: flex;
-  flex: 1;
+  height: 120px;
   flex-direction: row;
-  justify-content: center;
+  display: flex;
+  place-content: center;
   align-items: center;
-  margin: 15px 0;
 }
 
 #rocks>* {

@@ -19,7 +19,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --mode development",
-    "deploy": "webpack && firebase deploy --only hosting",
+    "deploy": "webpack --mode production && firebase deploy --only hosting",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
