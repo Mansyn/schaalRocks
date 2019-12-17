@@ -1,4 +1,5 @@
 const path = require('path');
+const dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: path.join(__dirname, 'scripts/app.ts'),
@@ -15,6 +16,9 @@ module.exports = {
             },
         ]
     },
+    plugins: [
+        new dotenv()
+    ],
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
     },
