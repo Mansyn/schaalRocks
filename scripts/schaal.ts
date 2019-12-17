@@ -18,8 +18,9 @@ export class Schaal {
     }
 
     public setup() {
-        this.createDrop()
+        this.createDrops()
         this.createRock('rocket')
+        this.createRock('rockpile')
         this.createRock('blood')
         this.createRock('blood-drop')
     }
@@ -28,6 +29,8 @@ export class Schaal {
         if (Utils.isDropZone(evt.target)) {
             let dropzone = Utils.castElem(evt.target)
             dropzone.style.background = 'rgba(24, 23, 23, 0.9)'
+        } else if (Utils.isRockZone(evt.target)) {
+
         }
     }
 
@@ -35,6 +38,8 @@ export class Schaal {
         if (Utils.isDropZone(evt.target)) {
             let dropzone = Utils.castElem(evt.target)
             dropzone.style.background = 'rgba(24, 23, 23, 0.65)'
+        } else if (Utils.isRockZone(evt.target)) {
+
         }
     }
 
@@ -44,7 +49,7 @@ export class Schaal {
 
     private drop = (evt: DragEvent) => {
         evt.preventDefault();
-        if (Utils.isElem(evt.target)) {
+        if (Utils.isDropZone(evt.target)) {
             let dropzone = Utils.castElem(evt.target)
             const data = evt.dataTransfer.getData('text/plain')
             const rockQuery = document.querySelector(`#${data}`)
@@ -52,13 +57,20 @@ export class Schaal {
             let rock = this.rocks.filter(r => r.name == rockQuery.id)[0]
             rockElem.style.opacity = '1'
             dropzone.style.background = 'rgba(24, 23, 23, 0.65)'
-            try {
+            if (!this.selectedRocks.filter(r => r.name == rock.name).length) {
+                this.selectedRocks.push(rock)
                 dropzone.appendChild(rockElem)
-                if (!this.selectedRocks.filter(r => r.name == rock.name).length) {
-                    this.selectedRocks.push(rock)
-                }
-            } catch (error) {
-                console.warn("you can't move the item to the same place")
+            }
+        } else if (Utils.isRockZone(evt.target)) {
+            let rockzone = Utils.castElem(evt.target)
+            const data = evt.dataTransfer.getData('text/plain')
+            const rockQuery = document.querySelector(`#${data}`)
+            let rockElem = Utils.castImg(rockQuery)
+            let rock = this.rocks.filter(r => r.name == rockQuery.id)[0]
+            rockElem.style.opacity = '1'
+            if (this.selectedRocks.filter(r => r.name == rock.name).length) {
+                this.selectedRocks.splice(this.selectedRocks.indexOf(rock), 1)
+                rockzone.appendChild(rockElem)
             }
         }
     }
@@ -78,14 +90,20 @@ export class Schaal {
         }
     }
 
-    private createDrop() {
-        var zone = document.createElement('div')
-        zone.setAttribute('class', 'dropzone')
-        zone.ondragenter = this.dragEnter
-        zone.ondragleave = this.dragLeave
-        zone.ondragover = this.dragOver
-        zone.ondrop = this.drop
-        document.getElementById('board').appendChild(zone)
+    private createDrops() {
+        let dropzone = document.createElement('div')
+        dropzone.setAttribute('class', 'dropzone')
+        dropzone.ondragenter = this.dragEnter
+        dropzone.ondragleave = this.dragLeave
+        dropzone.ondragover = this.dragOver
+        dropzone.ondrop = this.drop
+        document.getElementById('board').appendChild(dropzone)
+
+        let rockzone = document.getElementById('rocks')
+        rockzone.ondragenter = this.dragEnter
+        rockzone.ondragleave = this.dragLeave
+        rockzone.ondragover = this.dragOver
+        rockzone.ondrop = this.drop
     }
 
     private createRock(name: string) {

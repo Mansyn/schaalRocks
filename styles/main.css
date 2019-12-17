@@ -75,6 +75,7 @@ img:focus,
 
 .dropzone .rock {
   margin: 0 20px;
+  cursor: move;
 }
 
 #rocks {
