@@ -1,4 +1,4 @@
-export default class Utils {
+export default class utils {
     static isElem(i: EventTarget) { return i instanceof HTMLElement }
     static isDropZone(i: EventTarget) { return i instanceof HTMLElement && i.className == 'dropzone' }
     static isRockZone(i: EventTarget) { return i instanceof HTMLElement && i.id == 'rocks' }

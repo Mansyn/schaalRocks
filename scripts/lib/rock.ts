@@ -1,10 +1,10 @@
-import Guid from './guid'
+import guid from './guid'
 
-export default class Rock {
+export default class rock {
     id: string
     name: string
     constructor(_name: string) {
-        this.id = Guid.newGuid()
+        this.id = guid.newGuid()
         this.name = _name
     }
 }
