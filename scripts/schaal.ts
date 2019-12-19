@@ -1,6 +1,7 @@
 import utils from './lib/utils'
 import rock from './lib/rock'
 import player from './lib/player'
+import * as Tone from 'tone'
 
 export class Schaal {
 
@@ -8,13 +9,15 @@ export class Schaal {
     rocks: rock[]
     selectedRocks: rock[]
 
-    player: player
+    players: player[]
+    tone: Tone
 
     constructor(_name: string) {
         this.name = _name
         this.rocks = []
         this.selectedRocks = []
-        this.player = new player()
+        this.players = []
+        this.tone = new Tone.Player('../assets/audio/blood.flac').toMaster()
     }
 
     public myName() {
@@ -64,7 +67,7 @@ export class Schaal {
             if (!this.selectedRocks.filter(r => r.name == rock.name).length) {
                 this.selectedRocks.push(rock)
                 dropzone.appendChild(rockElem)
-                this.player.rocket()
+                this.startPlayer(rock.name)
             }
         } else if (utils.isRockZone(evt.target)) {
             let rockzone = utils.castElem(evt.target)
@@ -76,6 +79,7 @@ export class Schaal {
             if (this.selectedRocks.filter(r => r.name == rock.name).length) {
                 this.selectedRocks.splice(this.selectedRocks.indexOf(rock), 1)
                 rockzone.appendChild(rockElem)
+                this.stopPlayer(rock)
             }
         }
     }
@@ -93,6 +97,18 @@ export class Schaal {
             let img = utils.castImg(evt.target)
             img.style.opacity = '1'
         }
+    }
+
+    private startPlayer(name) {
+        let _player = new player(this.tone, name)
+        this.players.push(_player)
+        _player.play()
+    }
+
+    private stopPlayer(rock) {
+        let _player = this.players.find((p) => p.name == rock.name)
+        this.players.splice(this.players.indexOf(_player), 1)
+        _player.stop()
     }
 
     private createDrops() {
@@ -114,7 +130,7 @@ export class Schaal {
     private createRock(name: string) {
         this.rocks.push(new rock(name))
         let img = document.createElement('img')
-        img.setAttribute('src', '/assets/' + name + '.svg')
+        img.setAttribute('src', '/assets/img/' + name + '.svg')
         img.setAttribute('id', name)
         img.setAttribute('draggable', 'true')
         img.setAttribute('class', 'rock')

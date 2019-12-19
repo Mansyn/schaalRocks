@@ -34,7 +34,7 @@ img:focus,
   flex-direction: column;
   place-content: stretch flex-start;
   align-items: stretch;
-  background-image: url('/assets/splatter.svg');
+  background-image: url('/assets/img/splatter.svg');
   background-repeat: no-repeat;
   background-position: center bottom;
   background-attachment: fixed;
