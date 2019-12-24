@@ -1,7 +1,6 @@
 import utils from './lib/utils'
 import rock from './lib/rock'
 import player from './lib/player'
-import * as Tone from 'tone'
 
 export class Schaal {
 
@@ -10,7 +9,6 @@ export class Schaal {
     selectedRocks: rock[]
 
     players: player[]
-    tone: Tone
 
     constructor(_name: string) {
         this.name = _name
@@ -25,8 +23,8 @@ export class Schaal {
 
     public setup() {
         this.createDrops()
-        this.createRock('rocket')
-        this.createRock('rockpile')
+        this.createRock('syringe')
+        this.createRock('rock')
         this.createRock('blood')
         this.createRock('blood-drop')
     }
@@ -84,7 +82,6 @@ export class Schaal {
     }
 
     private dragStart = (evt: DragEvent) => {
-        this.toneInit()
         if (utils.isImg(evt.target)) {
             let img = utils.castImg(evt.target)
             img.style.opacity = '0.4'
@@ -100,9 +97,9 @@ export class Schaal {
     }
 
     private startPlayer(name) {
-        let _player = new player(this.tone, name)
+        let _player = new player(name)
         this.players.push(_player)
-        _player.play()
+        //_player.play()
     }
 
     private stopPlayer(rock) {
@@ -137,17 +134,5 @@ export class Schaal {
         img.ondragstart = this.dragStart
         img.ondragend = this.dragEnd
         document.getElementById('rocks').appendChild(img)
-    }
-
-    private toneInit() {
-        // needs to be created from a user gesture
-        if (!this.tone) {
-            this.tone = new Tone.Players({
-                'rocket': '../assets/audio/rocket.flac',
-                'blood': '../assets/audio/blood.flac',
-                'blood-drop': '../../assets/audio/blood-drop.flac',
-                'rockpile': '../../assets/audio/rockpile.flac'
-            }).toMaster()
-        }
     }
 }

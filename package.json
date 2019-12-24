@@ -6,7 +6,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "firebase": "^7.5.0",
-    "tone": "^13.8.25"
+    "howler": "^2.1.2"
   },
   "devDependencies": {
     "@types/tone": "git://github.com/Tonejs/TypeScript.git",

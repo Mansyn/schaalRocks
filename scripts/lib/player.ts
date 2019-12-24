@@ -1,20 +1,28 @@
+import { Howl } from 'howler'
 
 export default class player {
 
-    tone: any
+    track: any
     name: string
 
-    constructor(tone, _name) {
+    constructor(_name) {
         this.name = _name
-        this.tone = tone
+        this.track = new Howl({
+            src: ['../../assets/audio/' + _name + '.flac'],
+            autoplay: true,
+            loop: true,
+            onend: function () {
+                //console.log('Finished!');
+            }
+        })
     }
 
     play() {
-        this.tone.get(this.name).start()
+        this.track.play()
     }
 
     stop() {
-        this.tone.get(this.name).stop()
+        this.track.stop()
     }
 
 }
