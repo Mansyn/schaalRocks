@@ -17,7 +17,6 @@ export class Schaal {
         this.rocks = []
         this.selectedRocks = []
         this.players = []
-        this.tone = new Tone.Player('../assets/audio/blood.flac').toMaster()
     }
 
     public myName() {
@@ -85,6 +84,7 @@ export class Schaal {
     }
 
     private dragStart = (evt: DragEvent) => {
+        this.toneInit()
         if (utils.isImg(evt.target)) {
             let img = utils.castImg(evt.target)
             img.style.opacity = '0.4'
@@ -137,5 +137,17 @@ export class Schaal {
         img.ondragstart = this.dragStart
         img.ondragend = this.dragEnd
         document.getElementById('rocks').appendChild(img)
+    }
+
+    private toneInit() {
+        // needs to be created from a user gesture
+        if (!this.tone) {
+            this.tone = new Tone.Players({
+                'rocket': '../assets/audio/rocket.flac',
+                'blood': '../assets/audio/blood.flac',
+                'blood-drop': '../../assets/audio/blood-drop.flac',
+                'rockpile': '../../assets/audio/rockpile.flac'
+            }).toMaster()
+        }
     }
 }

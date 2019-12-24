@@ -1,5 +1,4 @@
 
-
 export default class player {
 
     tone: any
@@ -8,20 +7,14 @@ export default class player {
     constructor(tone, _name) {
         this.name = _name
         this.tone = tone
-        this.tone.url = '../../assets/audio/'+name+'.flac'
-        this.tone.loop = true
     }
 
     play() {
-        if (this.tone.state == 'stopped') {
-            this.tone.start()
-        }
+        this.tone.get(this.name).start()
     }
 
     stop() {
-        if (this.tone.state == 'started') {
-            this.tone.stop()
-        }
+        this.tone.get(this.name).stop()
     }
 
 }
