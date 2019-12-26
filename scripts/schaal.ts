@@ -89,6 +89,30 @@ export class Schaal {
         }
     }
 
+    private clickRock = (evt: Event) => {
+        if (utils.isImg(evt.target)) {
+            let img = utils.castImg(evt.target)
+            let rock = this.rocks.filter(r => r.name == img.id)[0]
+            img.style.opacity = '1'
+            if (img.parentElement.id == 'rocks') {
+                let dropzone = utils.castElem(document.querySelector(`#board .dropzone`))
+                dropzone.style.background = 'rgba(24, 23, 23, 0.65)'
+                if (!this.selectedRocks.filter(r => r.name == rock.name).length) {
+                    this.selectedRocks.push(rock)
+                    dropzone.appendChild(img)
+                    this.startPlayer(rock.name)
+                }
+            } else {
+                let rockzone = utils.castElem(document.querySelector(`#rocks`))
+                if (this.selectedRocks.filter(r => r.name == rock.name).length) {
+                    this.selectedRocks.splice(this.selectedRocks.indexOf(rock), 1)
+                    rockzone.appendChild(img)
+                    this.stopPlayer(rock)
+                }
+            }
+        }
+    }
+
     private dragEnd = (evt: DragEvent) => {
         if (utils.isImg(evt.target)) {
             let img = utils.castImg(evt.target)
@@ -99,7 +123,7 @@ export class Schaal {
     private startPlayer(name) {
         let _player = new player(name)
         this.players.push(_player)
-        //_player.play()
+        _player.play()
     }
 
     private stopPlayer(rock) {
@@ -132,6 +156,7 @@ export class Schaal {
         img.setAttribute('draggable', 'true')
         img.setAttribute('class', 'rock')
         img.ondragstart = this.dragStart
+        img.onclick = this.clickRock
         img.ondragend = this.dragEnd
         document.getElementById('rocks').appendChild(img)
     }

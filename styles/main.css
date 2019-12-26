@@ -36,7 +36,7 @@ img:focus,
   align-items: stretch;
   background-image: url('/assets/img/splatter.svg');
   background-repeat: no-repeat;
-  background-position: center bottom;
+  background-position: center center;
   background-attachment: fixed;
 }
 
@@ -75,7 +75,7 @@ img:focus,
 
 .dropzone .rock {
   margin: 0 20px;
-  cursor: move;
+  cursor: no-drop;
 }
 
 #rocks {
@@ -88,7 +88,7 @@ img:focus,
 
 #rocks>* {
   margin: 0 10px;
-  cursor: move;
+  cursor: cell;
 }
 
 .rock {

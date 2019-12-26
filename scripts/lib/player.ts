@@ -9,7 +9,6 @@ export default class player {
         this.name = _name
         this.track = new Howl({
             src: ['../../assets/audio/' + _name + '.flac'],
-            autoplay: true,
             loop: true,
             onend: function () {
                 //console.log('Finished!');
