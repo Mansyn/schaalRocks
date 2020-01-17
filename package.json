@@ -6,7 +6,8 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "firebase": "^7.5.0",
-    "howler": "^2.1.2"
+    "howler": "^2.1.2",
+    "three": "^0.112.1"
   },
   "devDependencies": {
     "@types/tone": "git://github.com/Tonejs/TypeScript.git",
@@ -28,6 +29,12 @@
     "type": "git",
     "url": "git+https://github.com/Mansyn/schaalRocks.git"
   },
+  "keywords": [
+    "three.js",
+    "web",
+    "animation",
+    "howler"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
