@@ -16,7 +16,6 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
 
-
 //let howl = new Schaal('schaal rocks')
 let three = new ModelThree()
 

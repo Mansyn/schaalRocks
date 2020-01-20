@@ -115,7 +115,6 @@ export class ModelThree {
 
         const storkPosition = new THREE.Vector3(0, -2.5, -10)
         loader.load('/assets/models/stork.glb', gltf => onLoad(gltf, storkPosition), onProgress, onError)
-
     }
 
     private createRenderer() {
