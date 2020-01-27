@@ -1,4 +1,4 @@
-import guid from './guid'
+import guid from '../utils/guid'
 
 export default class rock {
     id: string

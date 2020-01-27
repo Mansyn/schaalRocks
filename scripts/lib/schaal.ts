@@ -1,6 +1,6 @@
-import utils from './lib/utils'
-import rock from './lib/rock'
-import player from './lib/player'
+import utils from './utils/helpers'
+import rock from './models/rock'
+import player from './howl/player'
 
 export class Schaal {
 

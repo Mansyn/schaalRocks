@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import utils from '../utils'
+import utils from '../utils/helpers'
 
 export class BoxThree {
 

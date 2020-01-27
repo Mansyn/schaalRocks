@@ -20,7 +20,8 @@ body {
 
 button:focus,
 img:focus,
-.lose-outline {
+.lose-outline,
+canvas {
   outline: 0;
 }
 

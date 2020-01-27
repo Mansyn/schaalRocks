@@ -1,15 +1,15 @@
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import utils from '../utils'
+import utils from '../utils/helpers'
+import IO from '../utils/io'
 
 export class ModelThree {
 
     container: HTMLDivElement
     scene: THREE.Scene
     camera: THREE.PerspectiveCamera
-    controls: OrbitControls
+    controls: MapControls
     geometry: THREE.BoxBufferGeometry
     textureLoader: THREE.TextureLoader
     material: THREE.MeshStandardMaterial
@@ -32,7 +32,8 @@ export class ModelThree {
     private dom() {
         this.container = utils.castDivElem(document.createElement('div'))
         this.container.setAttribute('id', 'scene-container')
-        this.container.setAttribute('class', 'dropzone lose-outline')
+        this.container.setAttribute('class', 'dropzone')
+        this.container.setAttribute('style', 'min-height:400px')
         document.getElementById('board').appendChild(this.container)
     }
     
@@ -41,12 +42,14 @@ export class ModelThree {
         this.clock = new THREE.Clock()
 
         this.scene = new THREE.Scene()
+        this.scene.background = new THREE.Color(0xffffff)
+        this.scene.fog = new THREE.FogExp2(0xffffff, 0.002)
 
         this.createCamera()
-        this.createControls()
         this.createLights()
         this.loadModels()
         this.createRenderer()
+        this.createControls()
 
         this.renderer.setAnimationLoop(() => {
             this.update()
@@ -55,71 +58,62 @@ export class ModelThree {
     }
 
     private createCamera() {
-        this.camera = new THREE.PerspectiveCamera(35, this.container.clientWidth / this.container.clientHeight, 1, 100);
-        this.camera.position.set(-1.5, 1.5, 6.5);
+        this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 1000);
+        this.camera.position.set(400, 200, 0);
     }
 
     private createControls() {
-        this.controls = new OrbitControls(this.camera, this.container);
+        this.controls = new MapControls(this.camera, this.renderer.domElement)
+        this.controls.enableDamping = true
+        this.controls.dampingFactor = 0.05
+
+        this.controls.screenSpacePanning = false
+
+        this.controls.minDistance = 100
+        this.controls.maxDistance = 500
+
+        this.controls.maxPolarAngle = Math.PI / 2
     }
 
     private createLights() {
-        const ambientLight = new THREE.HemisphereLight(
-            0xddeeff, // sky color
-            0x202020, // ground color
-            5, // intensity
-        )
+        let light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(1, 1, 1);
+        this.scene.add(light);
 
-        const mainLight = new THREE.DirectionalLight(0xffffff, 5)
-        mainLight.position.set(10, 10, 10)
+        let light2 = new THREE.DirectionalLight(0x002288)
+        light2.position.set(- 1, - 1, - 1);
+        this.scene.add(light2);
 
-        this.scene.add(ambientLight, mainLight)
+        let light3 = new THREE.AmbientLight(0x222222)
+        this.scene.add(light3);
     }
 
     private loadModels() {
 
-        const loader = new GLTFLoader()
+        var geometry = new THREE.BoxBufferGeometry(1, 1, 1);
+        geometry.translate(0, 0.5, 0);
+        var material = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
 
-        // A reusable function to set up the models. We're passing in a position parameter
-        // so that they can be individually placed around the scene
-        const onLoad = (gltf, position) => {
+        let trackList = IO.trackList()
 
-            const model = gltf.scene.children[0]
-            model.position.copy(position)
+        for (var i = 0; i < trackList.length; i++) {
 
-            const animation = gltf.animations[0]
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.x = Math.random() * 1600 - 800;
+            mesh.position.y = 0;
+            mesh.position.z = Math.random() * 1600 - 800;
+            mesh.scale.x = 20
+            mesh.scale.y = Math.random() * 80 + 10;
+            mesh.scale.z = 20;
+            mesh.updateMatrix();
+            mesh.matrixAutoUpdate = false;
+            this.scene.add(mesh);
 
-            const mixer = new THREE.AnimationMixer(model)
-            this.mixers.push(mixer)
-
-            const action = mixer.clipAction(animation)
-            action.play()
-
-            this.scene.add(model)
         }
-
-        // the loader will report the loading progress to this function
-        const onProgress = () => { }
-
-        // the loader will send any error messages to this function, and we'll log
-        // them to to console
-        const onError = (errorMessage) => { console.log(errorMessage) }
-
-        // load the first model. Each model is loaded asynchronously,
-        // so don't make any assumption about which one will finish loading first
-        const parrotPosition = new THREE.Vector3(0, 0, 2.5)
-        loader.load('/assets/models/parrot.glb', gltf => onLoad(gltf, parrotPosition), onProgress, onError)
-
-        const flamingoPosition = new THREE.Vector3(7.5, 0, -10)
-        loader.load('/assets/models/flamingo.glb', gltf => onLoad(gltf, flamingoPosition), onProgress, onError)
-
-        const storkPosition = new THREE.Vector3(0, -2.5, -10)
-        loader.load('/assets/models/stork.glb', gltf => onLoad(gltf, storkPosition), onProgress, onError)
     }
 
     private createRenderer() {
-        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
-        this.renderer.setClearColor(0x000000, 0)
+        this.renderer = new THREE.WebGLRenderer({ antialias: true })
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight)
 
         this.renderer.setPixelRatio(window.devicePixelRatio)
@@ -133,11 +127,7 @@ export class ModelThree {
     }
 
     private update() {
-        const delta = this.clock.getDelta();
-
-        for (const mixer of this.mixers) {
-            mixer.update(delta);
-        }
+        this.controls.update()
     }
 
     private render() {

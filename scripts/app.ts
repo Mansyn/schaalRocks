@@ -1,6 +1,5 @@
 import * as firebase from 'firebase/app';
 //import { Schaal } from './schaal'
-//import { BoxThree } from './lib/three/box'
 import { ModelThree } from './lib/three/model'
 
 const firebaseConfig = {
