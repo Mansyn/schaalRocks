@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import utils from '../utils/helpers'
+import helpers from '../utils/helpers'
 import loader from '../utils/loader'
 
 export class ThreeSpace {
@@ -31,7 +31,7 @@ export class ThreeSpace {
     }
 
     private dom() {
-        this.container = utils.castDivElem(document.createElement('div'))
+        this.container = helpers.castDivElem(document.createElement('div'))
         this.container.setAttribute('id', 'scene-container')
         this.container.setAttribute('class', 'dropzone')
         this.container.setAttribute('style', 'min-height:400px')
@@ -54,7 +54,7 @@ export class ThreeSpace {
         }
 
         const loader = new THREE.FontLoader(this.loadingManager)
-        loader.load('assets/fonts/Roboto_Regular.json', function (response) {
+        loader.load('assets/fonts/Reznor_Broken.json', function (response) {
             that.font = response
         })
     }
@@ -128,21 +128,22 @@ export class ThreeSpace {
             track_mesh.updateMatrix()
             track_mesh.matrixAutoUpdate = false
 
-            const geom = new THREE.TextGeometry(trackList[i].name, {
+            const geom = new THREE.TextGeometry(trackList[i].name.toUpperCase(), {
                 font: this.font,
                 size: 10,
-                height: 2,
+                height: 1,
                 curveSegments: 30
             })
 
             const text_material = new THREE.MeshStandardMaterial({
-                color: Math.random() * 0xFFFFFF
+                color: 0x000000
             })
                 
             let text_mesh = new THREE.Mesh(geom, text_material)
-            let position = new THREE.Vector3(track_mesh.position.x, track_mesh.position.y, track_mesh.position.z)
+            let position = new THREE.Vector3(track_mesh.position.x + 14, track_mesh.position.y, track_mesh.position.z + 5)
 
             text_mesh.position.copy(position)
+            text_mesh.rotateX(Math.PI / -2)
 
             this.scene.add(text_mesh)
             this.scene.add(track_mesh)

@@ -1,4 +1,4 @@
-export default class Helpers {
+export default class helpers {
     static isElem(i: EventTarget) { return i instanceof HTMLElement }
     static castElem(i: EventTarget) { return i as HTMLElement }
     static isDivElem(i: EventTarget) { return i instanceof HTMLDivElement }

@@ -14,7 +14,7 @@ body {
   height: 100%;
   position: relative;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: black;
+  background-color: white;
   color: whitesmoke;
 }
 
@@ -44,7 +44,7 @@ canvas {
 .head {
   font-size: 47px;
   height: 90px;
-  color: whitesmoke;
+  color: black;
   flex-direction: row;
   display: flex;
   place-content: center;
@@ -68,10 +68,10 @@ canvas {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  border: 10px double rgb(105, 7, 7);
+  border: 10px double #000000;
   font-size: 2.5rem;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-  background-color: rgba(24, 23, 23, 0.65);
+  background-color: white;
 }
 
 .dropzone .rock {

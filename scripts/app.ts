@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/app';
+import firebase from '@firebase/app';
 //import { Schaal } from './schaal'
 import { ThreeSpace } from './lib/three/space'
 
