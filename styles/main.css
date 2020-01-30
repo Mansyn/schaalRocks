@@ -68,7 +68,7 @@ canvas {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  border: 10px solid rgb(105, 7, 7);
+  border: 10px double rgb(105, 7, 7);
   font-size: 2.5rem;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   background-color: rgba(24, 23, 23, 0.65);
@@ -104,4 +104,8 @@ canvas {
   /* Required to make elements draggable in old WebKit */
   -khtml-user-drag: element;
   -webkit-user-drag: element;
+}
+
+canvas {
+  border-radius: 15px;
 }

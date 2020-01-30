@@ -1,8 +1,8 @@
-import utils from './utils/helpers'
-import rock from './models/rock'
-import player from './howl/player'
+import utils from '../utils/helpers'
+import rock from '../models/rock'
+import player from './player'
 
-export class Schaal {
+export class schaal {
 
     name: string
     rocks: rock[]

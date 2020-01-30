@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app';
 //import { Schaal } from './schaal'
-import { ModelThree } from './lib/three/model'
+import { ThreeSpace } from './lib/three/space'
 
 const firebaseConfig = {
     apiKey: process.env.APIKEY,
@@ -16,10 +16,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 //let howl = new Schaal('schaal rocks')
-let three = new ModelThree()
+let space = new ThreeSpace()
 
 window.addEventListener('DOMContentLoaded', function (event) {
-    three.init()
+    space.load()
 })
 
-window.addEventListener('resize', three.onWindowResize)
+window.addEventListener('resize', space.onWindowResize)
