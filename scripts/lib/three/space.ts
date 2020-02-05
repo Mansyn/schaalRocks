@@ -7,6 +7,7 @@ import loader from '../utils/loader'
 export class ThreeSpace {
 
     container: HTMLDivElement
+
     loadingManager: THREE.LoadingManager
     scene: THREE.Scene
     camera: THREE.PerspectiveCamera
@@ -20,6 +21,10 @@ export class ThreeSpace {
     mixers: any
     clock: THREE.Clock
     font: THREE.Font
+
+    targetList: THREE.Mesh[]
+    raycaster: THREE.Raycaster
+    mouse: THREE.Vector2
 
     fov: number
     aspect: number
@@ -36,8 +41,10 @@ export class ThreeSpace {
         this.container.setAttribute('class', 'dropzone')
         this.container.setAttribute('style', 'min-height:400px')
         document.getElementById('board').appendChild(this.container)
+
+        document.addEventListener('mousedown', this.onDocumentMouseDown, false)
     }
-    
+
     public load() {
         const that = this
 
@@ -61,7 +68,10 @@ export class ThreeSpace {
 
     private init() {
         this.mixers = []
+        this.targetList = []
         this.clock = new THREE.Clock()
+        this.raycaster = new THREE.Raycaster()
+        this.mouse = new THREE.Vector2()
 
         this.scene = new THREE.Scene()
         this.scene.background = new THREE.Color(0xffffff)
@@ -76,6 +86,10 @@ export class ThreeSpace {
         this.renderer.setAnimationLoop(() => {
             this.update()
             this.render()
+            if (document.getElementById('loading') != null) {
+                let elem = document.getElementById('loading')
+                elem.parentNode.removeChild(elem)
+            }
         })
     }
 
@@ -98,23 +112,21 @@ export class ThreeSpace {
     }
 
     private createLights() {
-        let light = new THREE.DirectionalLight(0xffffff)
-        light.position.set(1, 1, 1)
+        let light = new THREE.DirectionalLight(0xA22825, 4)
+        light.position.set(0, 10, 0);
+        light.target.position.set(5, 0, -5)
         this.scene.add(light)
+        this.scene.add(light.target)
 
-        let light2 = new THREE.DirectionalLight(0x690707)
-        light2.position.set(- 1, - 1, - 1)
+        let light2 = new THREE.AmbientLight(0x000000, 1)
         this.scene.add(light2)
-
-        let light3 = new THREE.AmbientLight(0x222222)
-        this.scene.add(light3)
     }
 
     private loadModels() {
         const trackList = loader.trackList()
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
-        const box_material = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true })
+        const box_material = new THREE.MeshPhongMaterial({ color: 0x0E1C1C, flatShading: true })
 
         for (var i = 0; i < trackList.length; i++) {
 
@@ -136,7 +148,7 @@ export class ThreeSpace {
             })
 
             const text_material = new THREE.MeshStandardMaterial({
-                color: 0x000000
+                color: 0x0E1C1C
             })
                 
             let text_mesh = new THREE.Mesh(geom, text_material)
@@ -147,6 +159,7 @@ export class ThreeSpace {
 
             this.scene.add(text_mesh)
             this.scene.add(track_mesh)
+            this.targetList.push(track_mesh)
         }
     }
 
@@ -177,6 +190,31 @@ export class ThreeSpace {
             this.camera.aspect = this.container.clientWidth / this.container.clientHeight
             this.camera.updateProjectionMatrix()
             this.renderer.setSize(this.container.clientWidth, this.container.clientHeight)
+        }
+    }
+
+    private onDocumentMouseDown = (event) => {
+        // the following line would stop any other event handler from firing
+        // (such as the mouse's TrackballControls)
+        // event.preventDefault();
+
+        console.log("Click.");
+
+        // update the mouse variable
+        this.mouse.x = (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1;
+        this.mouse.y = - (event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
+
+        // find intersections
+
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+
+        // create an array containing all objects in the scene with which the ray intersects
+        var intersects = this.raycaster.intersectObjects(this.targetList, true)
+
+        // if there is one (or more) intersections
+        if (intersects.length > 0) {
+            console.log("Hit @ " + intersects[0].point.toString());
+            
         }
     }
 }
