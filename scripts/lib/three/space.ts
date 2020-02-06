@@ -3,11 +3,15 @@ import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import helpers from '../utils/helpers'
 import loader from '../utils/loader'
+import { COLORS, THREE_COLORS } from '../utils/constants'
+import player from '../howl/player'
 
 export class ThreeSpace {
 
+    storage: firebase.storage.Reference
     container: HTMLDivElement
-
+    players: player[]
+    
     loadingManager: THREE.LoadingManager
     scene: THREE.Scene
     camera: THREE.PerspectiveCamera
@@ -21,8 +25,6 @@ export class ThreeSpace {
     mixers: any
     clock: THREE.Clock
     font: THREE.Font
-    textureSide: THREE.Texture
-    textureEnd: THREE.Texture
 
     targetList: THREE.Mesh[]
     raycaster: THREE.Raycaster
@@ -33,8 +35,10 @@ export class ThreeSpace {
     near: number
     far: number
 
-    constructor() {
+    constructor(_storage: firebase.storage.Reference) {
         this.dom()
+        this.storage = _storage
+        this.players = []
     }
 
     private dom() {
@@ -52,10 +56,10 @@ export class ThreeSpace {
 
         this.loadingManager = new THREE.LoadingManager()
         this.loadingManager.onStart = function (url, itemsLoaded, itemsTotal) {
-            console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.')
+            //console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.')
         }
         this.loadingManager.onLoad = function () {
-            console.log('Loading complete')
+            //console.log('Loading complete')
 
             const loadingScreen = document.getElementById('loading-screen')
             loadingScreen.classList.add('fade-out')
@@ -66,19 +70,12 @@ export class ThreeSpace {
             that.init()
         }
         this.loadingManager.onError = function (url) {
-            console.log('There was an error loading ' + url)
+            //console.log('There was an error loading ' + url)
         }
 
         const fontLoader = new THREE.FontLoader(this.loadingManager)
-        const textureLoader = new THREE.TextureLoader(this.loadingManager)
         fontLoader.load('assets/fonts/Reznor_Broken.json', function (response) {
             that.font = response
-        })
-        textureLoader.load('assets/img/textures/tds.jpg', function (response) {
-            that.textureSide = response
-        })
-        textureLoader.load('assets/img/textures/tds-top.jpg', function (response) {
-            that.textureEnd = response
         })
     }
 
@@ -90,28 +87,24 @@ export class ThreeSpace {
         this.mouse = new THREE.Vector2()
 
         this.scene = new THREE.Scene()
-        this.scene.background = new THREE.Color(0xffffff)
-        this.scene.fog = new THREE.FogExp2(0xffffff, 0.002)
+        this.scene.background = THREE_COLORS.WHITE
+        //this.scene.fog = THREE_FOG_COLORS.WHITE
         
         this.createCamera()
         this.createLights()
         this.createRenderer()
         this.loadModels()
         this.createControls()
-
+        
         this.renderer.setAnimationLoop(() => {
             this.update()
             this.render()
-            if (document.getElementById('loading') != null) {
-                let elem = document.getElementById('loading')
-                elem.parentNode.removeChild(elem)
-            }
         })
     }
 
     private createCamera() {
-        this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 1000);
-        this.camera.position.set(400, 200, 0);
+        this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 2000)
+        this.camera.position.set(400, 200, 0)
     }
 
     private createControls() {
@@ -128,33 +121,26 @@ export class ThreeSpace {
     }
 
     private createLights() {
-        let light = new THREE.DirectionalLight(0xA22825, 4)
-        light.position.set(0, 10, 0);
-        light.target.position.set(5, 0, -5)
-        //this.scene.add(light)
-        //this.scene.add(light.target)
+        let light = new THREE.DirectionalLight(COLORS.WHITE)
+        light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z)
+        light.castShadow = true
+        light.shadow.camera.near = this.camera.near
+        light.shadow.camera.far = this.camera.far
+        light.shadow.mapSize.width = 2000
+        light.shadow.mapSize.height = 2000
 
-        let light2 = new THREE.AmbientLight(0x000000, 2)
-        this.scene.add(light2)
+        this.scene.add(light)
     }
 
     private loadModels() {
         const trackList = loader.trackList()
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
-        const box_materials = [
-            new THREE.MeshBasicMaterial({ map: this.textureSide }),
-            new THREE.MeshBasicMaterial({ map: this.textureSide }),
-            new THREE.MeshBasicMaterial({ map: this.textureEnd }),
-            new THREE.MeshBasicMaterial({ map: this.textureEnd }),
-            new THREE.MeshBasicMaterial({ map: this.textureSide }),
-            new THREE.MeshBasicMaterial({ map: this.textureSide })
-        ]
+        const track_material = new THREE.MeshPhongMaterial({ color: COLORS.RED2, specular: COLORS.BLACK, shininess: 30 })
 
         for (var i = 0; i < trackList.length; i++) {
-
-            let track_mesh = new THREE.Mesh(box_geometry, box_materials)
-            track_mesh.name = trackList[i].name
+            let track_mesh = new THREE.Mesh(box_geometry, track_material)
+            track_mesh.name = trackList[i].path
             track_mesh.position.x = Math.random() * 1600 - 800
             track_mesh.position.y = 0
             track_mesh.position.z = Math.random() * 1600 - 800
@@ -172,7 +158,7 @@ export class ThreeSpace {
             })
 
             const text_material = new THREE.MeshStandardMaterial({
-                color: 0x0E1C1C
+                color: COLORS.BLACK
             })
                 
             let text_mesh = new THREE.Mesh(geom, text_material)
@@ -218,26 +204,56 @@ export class ThreeSpace {
     }
 
     private onDocumentMouseDown = (event: MouseEvent) => {
-        // the following line would stop any other event handler from firing
-        // (such as the mouse's TrackballControls)
-        // event.preventDefault();
 
-        console.log('Click.')
+        event.preventDefault()
 
-        // update the mouse variable
-        this.mouse.x = (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1
-        this.mouse.y = - (event.clientY / this.renderer.domElement.clientHeight) * 2 + 1
+        this.mouse.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1)
 
-        // find intersections
-        this.raycaster.setFromCamera(this.mouse, this.camera);
+        this.raycaster.setFromCamera(this.mouse, this.camera)
 
-        // create an array containing all objects in the scene with which the ray intersects
-        var intersects = this.raycaster.intersectObjects(this.targetList, true)
+        const intersects = this.raycaster.intersectObjects(this.targetList)
 
-        // if there is one (or more) intersections
         if (intersects.length > 0) {
-            console.log('Hit @ ' + intersects[0].object.name)
-            
+            const intersect = intersects[0]
+
+            console.log('Hit @ ' + intersect.object.name)
+
+            this.startPlayer(intersect.object.name)
         }
+    }
+
+    private startPlayer(path: string) {
+        let audioRef = this.storage.child(path)
+
+        audioRef.getDownloadURL().then(function (url) {
+            console.log(url)
+        }).catch(function (error) {
+            switch (error.code) {
+                case 'storage/object-not-found':
+                    // File doesn't exist
+                    break;
+
+                case 'storage/unauthorized':
+                    // User doesn't have permission to access the object
+                    break;
+
+                case 'storage/canceled':
+                    // User canceled the upload
+                    break;
+                case 'storage/unknown':
+                    // Unknown error occurred, inspect the server response
+                    break;
+            }
+        })
+
+        // let _player = new player(id)
+        // this.players.push(_player)
+        // _player.play()
+    }
+
+    private stopPlayer(id: any) {
+        let _player = this.players.find((p) => p.name == id)
+        this.players.splice(this.players.indexOf(_player), 1)
+        _player.stop()
     }
 }

@@ -1,5 +1,6 @@
-import firebase from '@firebase/app';
-//import { Schaal } from './schaal'
+import firebase = require('firebase/app')
+import 'firebase/storage'
+
 import { ThreeSpace } from './lib/three/space'
 
 const firebaseConfig = {
@@ -13,10 +14,12 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig)
+const app: firebase.app.App = firebase.initializeApp(firebaseConfig)
 
-//let howl = new Schaal('schaal rocks')
-let space = new ThreeSpace()
+const storage: firebase.storage.Storage = app.storage()
+const storageRef = storage.ref()
+
+let space = new ThreeSpace(storageRef)
 
 window.addEventListener('DOMContentLoaded', function (event) {
     space.load()
