@@ -21,6 +21,8 @@ export class ThreeSpace {
     mixers: any
     clock: THREE.Clock
     font: THREE.Font
+    textureSide: THREE.Texture
+    textureEnd: THREE.Texture
 
     targetList: THREE.Mesh[]
     raycaster: THREE.Raycaster
@@ -54,15 +56,29 @@ export class ThreeSpace {
         }
         this.loadingManager.onLoad = function () {
             console.log('Loading complete')
+
+            const loadingScreen = document.getElementById('loading-screen')
+            loadingScreen.classList.add('fade-out')
+            loadingScreen.addEventListener('transitionend', function (event) {
+                (helpers.castElem(event.target)).remove()
+            })
+
             that.init()
         }
         this.loadingManager.onError = function (url) {
             console.log('There was an error loading ' + url)
         }
 
-        const loader = new THREE.FontLoader(this.loadingManager)
-        loader.load('assets/fonts/Reznor_Broken.json', function (response) {
+        const fontLoader = new THREE.FontLoader(this.loadingManager)
+        const textureLoader = new THREE.TextureLoader(this.loadingManager)
+        fontLoader.load('assets/fonts/Reznor_Broken.json', function (response) {
             that.font = response
+        })
+        textureLoader.load('assets/img/textures/tds.jpg', function (response) {
+            that.textureSide = response
+        })
+        textureLoader.load('assets/img/textures/tds-top.jpg', function (response) {
+            that.textureEnd = response
         })
     }
 
@@ -115,10 +131,10 @@ export class ThreeSpace {
         let light = new THREE.DirectionalLight(0xA22825, 4)
         light.position.set(0, 10, 0);
         light.target.position.set(5, 0, -5)
-        this.scene.add(light)
-        this.scene.add(light.target)
+        //this.scene.add(light)
+        //this.scene.add(light.target)
 
-        let light2 = new THREE.AmbientLight(0x000000, 1)
+        let light2 = new THREE.AmbientLight(0x000000, 2)
         this.scene.add(light2)
     }
 
@@ -126,11 +142,19 @@ export class ThreeSpace {
         const trackList = loader.trackList()
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
-        const box_material = new THREE.MeshPhongMaterial({ color: 0x0E1C1C, flatShading: true })
+        const box_materials = [
+            new THREE.MeshBasicMaterial({ map: this.textureSide }),
+            new THREE.MeshBasicMaterial({ map: this.textureSide }),
+            new THREE.MeshBasicMaterial({ map: this.textureEnd }),
+            new THREE.MeshBasicMaterial({ map: this.textureEnd }),
+            new THREE.MeshBasicMaterial({ map: this.textureSide }),
+            new THREE.MeshBasicMaterial({ map: this.textureSide })
+        ]
 
         for (var i = 0; i < trackList.length; i++) {
 
-            let track_mesh = new THREE.Mesh(box_geometry, box_material);
+            let track_mesh = new THREE.Mesh(box_geometry, box_materials)
+            track_mesh.name = trackList[i].name
             track_mesh.position.x = Math.random() * 1600 - 800
             track_mesh.position.y = 0
             track_mesh.position.z = Math.random() * 1600 - 800
@@ -193,19 +217,18 @@ export class ThreeSpace {
         }
     }
 
-    private onDocumentMouseDown = (event) => {
+    private onDocumentMouseDown = (event: MouseEvent) => {
         // the following line would stop any other event handler from firing
         // (such as the mouse's TrackballControls)
         // event.preventDefault();
 
-        console.log("Click.");
+        console.log('Click.')
 
         // update the mouse variable
-        this.mouse.x = (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1;
-        this.mouse.y = - (event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
+        this.mouse.x = (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1
+        this.mouse.y = - (event.clientY / this.renderer.domElement.clientHeight) * 2 + 1
 
         // find intersections
-
         this.raycaster.setFromCamera(this.mouse, this.camera);
 
         // create an array containing all objects in the scene with which the ray intersects
@@ -213,7 +236,7 @@ export class ThreeSpace {
 
         // if there is one (or more) intersections
         if (intersects.length > 0) {
-            console.log("Hit @ " + intersects[0].point.toString());
+            console.log('Hit @ ' + intersects[0].object.name)
             
         }
     }
