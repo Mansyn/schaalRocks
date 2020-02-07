@@ -3,13 +3,13 @@ import { Howl } from 'howler'
 export default class player {
 
     track: any
-    name: string
+    id: string
 
-    constructor(_name) {
-        this.name = _name
+    constructor(_id, _path) {
+        this.id = _id
         this.track = new Howl({
-            src: ['../../assets/audio/' + _name + '.flac'],
-            loop: true,
+            src: [_path],
+            loop: false,
             onend: function () {
                 //console.log('Finished!');
             }
@@ -23,5 +23,4 @@ export default class player {
     stop() {
         this.track.stop()
     }
-
 }

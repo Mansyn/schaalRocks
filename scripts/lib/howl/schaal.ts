@@ -121,15 +121,16 @@ export class schaal {
     }
 
     private startPlayer(name) {
-        let _player = new player(name)
-        this.players.push(_player)
-        _player.play()
+        // let _player = new player(name)
+        // this.players.push(_player)
+        // _player.play()
     }
 
-    private stopPlayer(rock) {
-        let _player = this.players.find((p) => p.name == rock.name)
-        this.players.splice(this.players.indexOf(_player), 1)
-        _player.stop()
+    private stopPlayer(rock) { 
+        
+        // let _player = this.players.find((p) => p.name == rock.name)
+        // this.players.splice(this.players.indexOf(_player), 1)
+        // _player.stop()
     }
 
     private createDrops() {

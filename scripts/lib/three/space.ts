@@ -5,6 +5,7 @@ import helpers from '../utils/helpers'
 import loader from '../utils/loader'
 import { COLORS, THREE_COLORS } from '../utils/constants'
 import player from '../howl/player'
+import track from '../models/track'
 
 export class ThreeSpace {
 
@@ -26,6 +27,7 @@ export class ThreeSpace {
     clock: THREE.Clock
     font: THREE.Font
 
+    trackList: track[]
     targetList: THREE.Mesh[]
     raycaster: THREE.Raycaster
     mouse: THREE.Vector2
@@ -133,14 +135,14 @@ export class ThreeSpace {
     }
 
     private loadModels() {
-        const trackList = loader.trackList()
+        this.trackList = loader.trackList()
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
         const track_material = new THREE.MeshPhongMaterial({ color: COLORS.RED2, specular: COLORS.BLACK, shininess: 30 })
 
-        for (var i = 0; i < trackList.length; i++) {
+        for (var i = 0; i < this.trackList.length; i++) {
             let track_mesh = new THREE.Mesh(box_geometry, track_material)
-            track_mesh.name = trackList[i].path
+            track_mesh.name = this.trackList[i].path
             track_mesh.position.x = Math.random() * 1600 - 800
             track_mesh.position.y = 0
             track_mesh.position.z = Math.random() * 1600 - 800
@@ -150,7 +152,7 @@ export class ThreeSpace {
             track_mesh.updateMatrix()
             track_mesh.matrixAutoUpdate = false
 
-            const geom = new THREE.TextGeometry(trackList[i].name.toUpperCase(), {
+            const geom = new THREE.TextGeometry(this.trackList[i].name.toUpperCase(), {
                 font: this.font,
                 size: 10,
                 height: 1,
@@ -215,45 +217,23 @@ export class ThreeSpace {
 
         if (intersects.length > 0) {
             const intersect = intersects[0]
+            const url = intersect.object.name
+            
+            console.log('Hit @ ' + url)
 
-            console.log('Hit @ ' + intersect.object.name)
+            // intersect.object.traverse(function (child) {
+            //     if (child instanceof THREE.Mesh) {
+            //         child.material = new THREE.MeshPhongMaterial({ color: COLORS.BLACK, specular: COLORS.RED, shininess: 30 })
+            //     }
+            // })
 
-            this.startPlayer(intersect.object.name)
+            this.startPlayer(url)
         }
     }
 
     private startPlayer(path: string) {
-        let audioRef = this.storage.child(path)
-
-        audioRef.getDownloadURL().then(function (url) {
-            console.log(url)
-        }).catch(function (error) {
-            switch (error.code) {
-                case 'storage/object-not-found':
-                    // File doesn't exist
-                    break;
-
-                case 'storage/unauthorized':
-                    // User doesn't have permission to access the object
-                    break;
-
-                case 'storage/canceled':
-                    // User canceled the upload
-                    break;
-                case 'storage/unknown':
-                    // Unknown error occurred, inspect the server response
-                    break;
-            }
-        })
-
-        // let _player = new player(id)
-        // this.players.push(_player)
-        // _player.play()
-    }
-
-    private stopPlayer(id: any) {
-        let _player = this.players.find((p) => p.name == id)
-        this.players.splice(this.players.indexOf(_player), 1)
-        _player.stop()
+        let _track = this.trackList.find((p) => p.path == path)
+        let _player = new player(_track.id, _track.path)
+        _player.play()
     }
 }
