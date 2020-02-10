@@ -6,6 +6,7 @@ import loader from '../utils/loader'
 import { COLORS, THREE_COLORS } from '../utils/constants'
 import player from '../howl/player'
 import track from '../models/track'
+import { Mesh } from 'three'
 
 export class ThreeSpace {
 
@@ -50,7 +51,7 @@ export class ThreeSpace {
         this.container.setAttribute('style', 'min-height:400px')
         document.getElementById('board').appendChild(this.container)
 
-        document.addEventListener('mousedown', this.onDocumentMouseDown, false)
+        document.addEventListener('click', this.onTap, false)
     }
 
     public load() {
@@ -205,7 +206,7 @@ export class ThreeSpace {
         }
     }
 
-    private onDocumentMouseDown = (event: MouseEvent) => {
+    private onTap = (event: MouseEvent) => {
 
         event.preventDefault()
 
@@ -216,24 +217,14 @@ export class ThreeSpace {
         const intersects = this.raycaster.intersectObjects(this.targetList)
 
         if (intersects.length > 0) {
-            const intersect = intersects[0]
-            const url = intersect.object.name
-            
-            console.log('Hit @ ' + url)
-
-            // intersect.object.traverse(function (child) {
-            //     if (child instanceof THREE.Mesh) {
-            //         child.material = new THREE.MeshPhongMaterial({ color: COLORS.BLACK, specular: COLORS.RED, shininess: 30 })
-            //     }
-            // })
-
-            this.startPlayer(url)
+            this.howling(intersects[0])
         }
     }
 
-    private startPlayer(path: string) {
-        let _track = this.trackList.find((p) => p.path == path)
-        let _player = new player(_track.id, _track.path)
+    private howling(intersect: THREE.Intersection) {
+        let _track = this.trackList.find((p) => p.path == intersect.object.name)
+
+        let _player = new player(_track, intersect)
         _player.play()
     }
 }
