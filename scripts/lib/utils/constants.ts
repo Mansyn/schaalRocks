@@ -16,3 +16,7 @@ export const THREE_FOG_COLORS = {
     WHITE: new THREE.FogExp2(COLORS.WHITE, 0.002),
     BLACK: new THREE.FogExp2(COLORS.BLACK, 0.002)
 }
+
+export const TRACK = {
+    WIDTH: 20
+}

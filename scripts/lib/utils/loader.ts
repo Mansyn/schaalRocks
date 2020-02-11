@@ -8,8 +8,6 @@ export default class loader {
             new track('bass 1', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20bass%20ch%201.flac?alt=media&token=019ccbc1-68b9-4461-b071-fd56088b9900'),
             new track('bass loop 2', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20bass%20verse%20loop%201.flac?alt=media&token=19a70c07-6cc6-4cab-b8a3-fd58ecb15844'),
             new track('bass loop 3', 'THTF bass verse loop 1.flac'),
-            new track('lead vox 1', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20V1%20lead%20vox.flac?alt=media&token=0dd6ae33-43ce-4b08-bc0a-43e5bf72ced8'),
-            new track('lead vox 2', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20V2%20lead%20vox.flac?alt=media&token=58ed9733-dda1-45f6-9378-3d8f89ceedee'),
             new track('coco loop 1', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20coco%20loop%201.flac?alt=media&token=24d355d6-e93a-4f58-af8a-593be3a51f64'),
             new track('coco loop 2', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20coco%20loop%202.flac?alt=media&token=58c8a7d3-33b8-4450-b6f8-489fc51cf420'),
             new track('coco loop 3', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20coco%20loop%203.flac?alt=media&token=31987d17-c0f6-4741-b25a-bb5fa3ac1234'),

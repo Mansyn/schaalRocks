@@ -68,7 +68,7 @@ canvas {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  border: 10px double #0E1C1C;
+  border: 14px double #0E1C1C;
   background-color: rgba(158, 147, 147, 0.0);
 }
 

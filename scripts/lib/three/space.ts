@@ -3,16 +3,14 @@ import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import helpers from '../utils/helpers'
 import loader from '../utils/loader'
-import { COLORS, THREE_COLORS } from '../utils/constants'
+import { COLORS, THREE_COLORS, TRACK } from '../utils/constants'
 import player from '../howl/player'
 import track from '../models/track'
-import { Mesh } from 'three'
+import threeUtils from '../utils/three'
 
 export class ThreeSpace {
 
-    storage: firebase.storage.Reference
     container: HTMLDivElement
-    players: player[]
     
     loadingManager: THREE.LoadingManager
     scene: THREE.Scene
@@ -28,6 +26,7 @@ export class ThreeSpace {
     clock: THREE.Clock
     font: THREE.Font
 
+    existingPositions: THREE.Vector3[]
     trackList: track[]
     targetList: THREE.Mesh[]
     raycaster: THREE.Raycaster
@@ -38,10 +37,9 @@ export class ThreeSpace {
     near: number
     far: number
 
-    constructor(_storage: firebase.storage.Reference) {
+    constructor() {
         this.dom()
-        this.storage = _storage
-        this.players = []
+        this.existingPositions = []
     }
 
     private dom() {
@@ -141,15 +139,15 @@ export class ThreeSpace {
         box_geometry.translate(0, 0.5, 0)
         const track_material = new THREE.MeshPhongMaterial({ color: COLORS.RED2, specular: COLORS.BLACK, shininess: 30 })
 
-        for (var i = 0; i < this.trackList.length; i++) {
+        for (let i = 0; i < this.trackList.length; i++) {
             let track_mesh = new THREE.Mesh(box_geometry, track_material)
             track_mesh.name = this.trackList[i].path
-            track_mesh.position.x = Math.random() * 1600 - 800
-            track_mesh.position.y = 0
-            track_mesh.position.z = Math.random() * 1600 - 800
-            track_mesh.scale.x = 20
+            track_mesh.position.copy(this.getPosition())
+            this.existingPositions.push(track_mesh.position)
+
+            track_mesh.scale.x = TRACK.WIDTH
             track_mesh.scale.y = Math.random() * 80 + 10
-            track_mesh.scale.z = 20
+            track_mesh.scale.z = TRACK.WIDTH
             track_mesh.updateMatrix()
             track_mesh.matrixAutoUpdate = false
 
@@ -165,15 +163,25 @@ export class ThreeSpace {
             })
                 
             let text_mesh = new THREE.Mesh(geom, text_material)
-            let position = new THREE.Vector3(track_mesh.position.x + 14, track_mesh.position.y, track_mesh.position.z + 5)
-
-            text_mesh.position.copy(position)
+            text_mesh.position.copy(new THREE.Vector3(track_mesh.position.x + 14, track_mesh.position.y, track_mesh.position.z + 5))
             text_mesh.rotateX(Math.PI / -2)
+            this.existingPositions.push(text_mesh.position)
 
             this.scene.add(text_mesh)
             this.scene.add(track_mesh)
             this.targetList.push(track_mesh)
         }
+    }
+
+    private getPosition(): THREE.Vector3 {
+        let track_position = new THREE.Vector3()
+        track_position.y = 0
+        do {
+            track_position.x = Math.random() * 1400 - 800
+            track_position.z = Math.random() * 1400 - 800
+        } while (threeUtils.hasOverlap(this.existingPositions, track_position))
+
+        return track_position
     }
 
     private createRenderer() {
