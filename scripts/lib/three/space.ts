@@ -208,21 +208,24 @@ export class ThreeSpace {
 
     public onWindowResize = () => {
         if (this.camera && this.renderer) {
-            this.camera.aspect = this.container.clientWidth / this.container.clientHeight
-            this.camera.updateProjectionMatrix()
-            this.renderer.setSize(this.container.clientWidth, this.container.clientHeight)
+            const canvas = this.renderer.domElement
+            const width = canvas.clientWidth
+            const height = canvas.clientHeight
+
+            if (canvas.width !== width || canvas.height !== height) {
+                this.renderer.setSize(width, height, false)
+                this.camera.aspect = width / height
+                this.camera.updateProjectionMatrix()
+            }
         }
     }
 
-    private onTap = (event: MouseEvent) => {
+    private onTap = (e: MouseEvent) => {
+        this.mouse.x = (e.offsetX / this.renderer.domElement.offsetWidth) * 2 - 1
+        this.mouse.y = -(e.offsetY / this.renderer.domElement.offsetHeight) * 2 + 1
 
-        event.preventDefault()
-
-        this.mouse.set((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1)
-
-        this.raycaster.setFromCamera(this.mouse, this.camera)
-
-        const intersects = this.raycaster.intersectObjects(this.targetList)
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.targetList, true)
 
         if (intersects.length > 0) {
             this.howling(intersects[0])
