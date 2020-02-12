@@ -1,6 +1,6 @@
-import guid from '../utils/guid'
+import { guid } from '../utils/guid'
 
-export default class rock {
+export class rock {
     id: string
     name: string
     constructor(_name: string) {

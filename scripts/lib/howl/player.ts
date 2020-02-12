@@ -1,10 +1,10 @@
 import { Howl } from 'howler'
 import * as THREE from 'three'
 
-import track from '../models/track'
+import { track } from '../models/track'
 import { COLORS } from '../utils/constants'
 
-export default class player {
+export class player {
 
     howl: any
     id: string

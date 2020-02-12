@@ -1,6 +1,6 @@
-import guid from '../utils/guid'
+import { guid } from '../utils/guid'
 
-export default class track {
+export class track {
     id: string
     name: string
     path: string

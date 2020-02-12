@@ -1,12 +1,12 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import helpers from '../utils/helpers'
-import loader from '../utils/loader'
+import { helpers } from '../utils/helpers'
+import { loader } from '../utils/loader'
 import { COLORS, THREE_COLORS, TRACK } from '../utils/constants'
-import player from '../howl/player'
-import track from '../models/track'
-import threeUtils from '../utils/three'
+import { player } from '../howl/player'
+import { track } from '../models/track'
+import { threeUtils } from '../utils/three'
 
 export class ThreeSpace {
 
@@ -40,9 +40,11 @@ export class ThreeSpace {
     constructor() {
         this.dom()
         this.existingPositions = []
+
+        window.addEventListener('resize', this.onWindowResize)
     }
 
-    private dom() {
+    private dom(): void {
         this.container = helpers.castDivElem(document.createElement('div'))
         this.container.setAttribute('id', 'scene-container')
         this.container.setAttribute('class', 'dropzone')
@@ -52,7 +54,7 @@ export class ThreeSpace {
         document.addEventListener('click', this.onTap, false)
     }
 
-    public load() {
+    public load(): void {
         const that = this
 
         this.loadingManager = new THREE.LoadingManager()
@@ -80,7 +82,7 @@ export class ThreeSpace {
         })
     }
 
-    private init() {
+    private init(): void {
         this.mixers = []
         this.targetList = []
         this.clock = new THREE.Clock()
@@ -103,12 +105,12 @@ export class ThreeSpace {
         })
     }
 
-    private createCamera() {
+    private createCamera(): void {
         this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 2000)
         this.camera.position.set(400, 200, 0)
     }
 
-    private createControls() {
+    private createControls(): void {
         this.controls = new MapControls(this.camera, this.renderer.domElement)
         this.controls.enableDamping = true
         this.controls.dampingFactor = 0.05
@@ -121,7 +123,7 @@ export class ThreeSpace {
         this.controls.maxPolarAngle = Math.PI / 2
     }
 
-    private createLights() {
+    private createLights(): void {
         let light = new THREE.DirectionalLight(COLORS.WHITE)
         light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z)
         light.castShadow = true
@@ -133,7 +135,7 @@ export class ThreeSpace {
         this.scene.add(light)
     }
 
-    private loadModels() {
+    private loadModels(): void {
         this.trackList = loader.trackList()
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
@@ -184,7 +186,7 @@ export class ThreeSpace {
         return track_position
     }
 
-    private createRenderer() {
+    private createRenderer(): void {
         this.renderer = new THREE.WebGLRenderer({ antialias: true })
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight)
 
@@ -198,11 +200,11 @@ export class ThreeSpace {
         this.container.appendChild(this.renderer.domElement)
     }
 
-    private update() {
+    private update(): void {
         this.controls.update()
     }
 
-    private render() {
+    private render(): void {
         this.renderer.render(this.scene, this.camera)
     }
 
@@ -228,14 +230,9 @@ export class ThreeSpace {
         const intersects = this.raycaster.intersectObjects(this.targetList, true)
 
         if (intersects.length > 0) {
-            this.howling(intersects[0])
+            let _track = this.trackList.find((p) => p.path == intersects[0].object.name)
+            let _player = new player(_track, intersects[0])
+            _player.play()
         }
-    }
-
-    private howling(intersect: THREE.Intersection) {
-        let _track = this.trackList.find((p) => p.path == intersect.object.name)
-
-        let _player = new player(_track, intersect)
-        _player.play()
     }
 }

@@ -1,13 +1,12 @@
-import track from "../models/track"
+import { track } from '../models/track'
 
-export default class loader {
+export class loader {
     static trackList() {
         return [
             new track('ambient loop 1', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20ambient%20loop%201.flac?alt=media&token=b0cf718b-0585-407c-ae9a-716a41d4192a'),
             new track('ambient loop 2', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20ambient%20loop%202.flac?alt=media&token=1f8496a5-f851-4783-9cc0-285e7bd2fc68'),
             new track('bass 1', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20bass%20ch%201.flac?alt=media&token=019ccbc1-68b9-4461-b071-fd56088b9900'),
             new track('bass loop 2', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20bass%20verse%20loop%201.flac?alt=media&token=19a70c07-6cc6-4cab-b8a3-fd58ecb15844'),
-            new track('bass loop 3', 'THTF bass verse loop 1.flac'),
             new track('coco loop 1', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20coco%20loop%201.flac?alt=media&token=24d355d6-e93a-4f58-af8a-593be3a51f64'),
             new track('coco loop 2', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20coco%20loop%202.flac?alt=media&token=58c8a7d3-33b8-4450-b6f8-489fc51cf420'),
             new track('coco loop 3', 'https://firebasestorage.googleapis.com/v0/b/stennifer-0.appspot.com/o/THTF%20coco%20loop%203.flac?alt=media&token=31987d17-c0f6-4741-b25a-bb5fa3ac1234'),

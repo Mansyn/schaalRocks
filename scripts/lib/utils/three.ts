@@ -1,6 +1,6 @@
 import { TRACK } from './constants'
 
-export default class threeUtils {
+export class threeUtils {
     static hasOverlap(existingPositions: THREE.Vector3[], track_position: THREE.Vector3): Boolean {
         let overlapping = false
         for (let i = 0; i < existingPositions.length; i++) {

@@ -1,6 +1,6 @@
 import firebase = require('firebase/app')
 
-import { ThreeSpace } from './lib/three/space'
+import { Rock } from './rock'
 
 const firebaseConfig = {
     apiKey: process.env.APIKEY,
@@ -18,10 +18,8 @@ const app: firebase.app.App = firebase.initializeApp(firebaseConfig)
 // const storage: firebase.storage.Storage = app.storage()
 // const storageRef = storage.ref()
 
-let space = new ThreeSpace()
+let rock = new Rock()
 
 window.addEventListener('DOMContentLoaded', function (event) {
-    space.load()
+    rock.init()
 })
-
-window.addEventListener('resize', space.onWindowResize)
