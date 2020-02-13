@@ -154,7 +154,7 @@ export class ThreeSpace {
             this.existingPositions.push(track_mesh.position)
 
             track_mesh.scale.x = TRACK.WIDTH
-            track_mesh.scale.y = Math.random() * 80 + 10
+            track_mesh.scale.y = this.trackList[i].file.size / 5000
             track_mesh.scale.z = TRACK.WIDTH
             track_mesh.updateMatrix()
             track_mesh.matrixAutoUpdate = false

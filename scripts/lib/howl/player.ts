@@ -10,9 +10,10 @@ export class player {
 
     constructor(_track: Itrack, intersect: THREE.Intersection) {
         const that = this
+        let blobUrl = window.URL.createObjectURL(_track.file)
         this.howl = new Howl({
-            src: [_track.path],
-            loop: false,
+            src: [blobUrl],
+            format: 'flac',
             onload: function () {
                 that.togglePlayingMesh(intersect.object, true)
             },
