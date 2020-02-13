@@ -1,7 +1,6 @@
 import { Howl } from 'howler'
 import * as THREE from 'three'
 
-import { track } from '../models/track'
 import { COLORS } from '../utils/constants'
 
 export class player {
@@ -9,9 +8,8 @@ export class player {
     howl: any
     id: string
 
-    constructor(_track: track, intersect: THREE.Intersection) {
+    constructor(_track: Itrack, intersect: THREE.Intersection) {
         const that = this
-        this.id = _track.id
         this.howl = new Howl({
             src: [_track.path],
             loop: false,

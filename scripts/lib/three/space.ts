@@ -2,16 +2,16 @@ import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { helpers } from '../utils/helpers'
-import { loader } from '../utils/loader'
 import { COLORS, THREE_COLORS, TRACK } from '../utils/constants'
 import { player } from '../howl/player'
-import { track } from '../models/track'
 import { threeUtils } from '../utils/three'
+import { TrackDatabase } from '../services/db'
 
 export class ThreeSpace {
 
     container: HTMLDivElement
     
+    db: TrackDatabase
     loadingManager: THREE.LoadingManager
     scene: THREE.Scene
     camera: THREE.PerspectiveCamera
@@ -27,7 +27,7 @@ export class ThreeSpace {
     font: THREE.Font
 
     existingPositions: THREE.Vector3[]
-    trackList: track[]
+    trackList: Itrack[]
     targetList: THREE.Mesh[]
     raycaster: THREE.Raycaster
     mouse: THREE.Vector2
@@ -37,11 +37,15 @@ export class ThreeSpace {
     near: number
     far: number
 
-    constructor() {
+    constructor(_db: TrackDatabase) {
         this.dom()
+        this.db = _db
         this.existingPositions = []
 
         window.addEventListener('resize', this.onWindowResize)
+
+        document.addEventListener('click', this.onTap, false)
+        document.addEventListener('touchend', this.onTap, false)
     }
 
     private dom(): void {
@@ -50,8 +54,6 @@ export class ThreeSpace {
         this.container.setAttribute('class', 'dropzone')
         this.container.setAttribute('style', 'min-height:400px')
         document.getElementById('board').appendChild(this.container)
-
-        document.addEventListener('click', this.onTap, false)
     }
 
     public load(): void {
@@ -64,13 +66,18 @@ export class ThreeSpace {
         this.loadingManager.onLoad = function () {
             //console.log('Loading complete')
 
-            const loadingScreen = document.getElementById('loading-screen')
-            loadingScreen.classList.add('fade-out')
-            loadingScreen.addEventListener('transitionend', function (event) {
-                (helpers.castElem(event.target)).remove()
-            })
+            that.db.tracks.toArray()
+                .then(tracks => {
+                    that.trackList = tracks
 
-            that.init()
+                    const loadingScreen = document.getElementById('loading-screen')
+                    loadingScreen.classList.add('fade-out')
+                    loadingScreen.addEventListener('transitionend', function (event) {
+                        (helpers.castElem(event.target)).remove()
+                    })
+
+                    that.init()
+                })
         }
         this.loadingManager.onError = function (url) {
             //console.log('There was an error loading ' + url)
@@ -136,7 +143,6 @@ export class ThreeSpace {
     }
 
     private loadModels(): void {
-        this.trackList = loader.trackList()
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
         const track_material = new THREE.MeshPhongMaterial({ color: COLORS.RED2, specular: COLORS.BLACK, shininess: 30 })
@@ -210,13 +216,13 @@ export class ThreeSpace {
 
     public onWindowResize = () => {
         if (this.camera && this.renderer) {
-            const canvas = this.renderer.domElement
-            const width = canvas.clientWidth
-            const height = canvas.clientHeight
+            const parent = this.renderer.domElement.parentElement
+            const width = this.renderer.domElement.clientWidth
+            const height = this.renderer.domElement.clientHeight
 
-            if (canvas.width !== width || canvas.height !== height) {
-                this.renderer.setSize(width, height, false)
-                this.camera.aspect = width / height
+            if (parent.clientWidth !== width || parent.clientHeight !== height) {
+                this.renderer.setSize(parent.clientWidth, parent.clientHeight)
+                this.camera.aspect = parent.clientWidth / parent.clientHeight
                 this.camera.updateProjectionMatrix()
             }
         }
