@@ -30,11 +30,6 @@ canvas {
 }
 
 .main-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  place-content: stretch flex-start;
-  align-items: stretch;
   background-image: url('/assets/img/splatter.svg');
   background-repeat: no-repeat;
   background-position: center center;
@@ -50,6 +45,23 @@ canvas {
   place-content: center;
   align-items: center;
   font-family: 'Jolly Lodger', cursive;
+}
+
+.foot {
+  height: 90px;
+}
+
+.fill-height{
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fill-height > div {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 #board {
@@ -70,38 +82,6 @@ canvas {
   flex-wrap: wrap;
   border: 14px double #0E1C1C;
   background-color: rgba(158, 147, 147, 0.0);
-}
-
-.dropzone .rock {
-  margin: 0 20px;
-  cursor: no-drop;
-}
-
-#rocks {
-  height: 120px;
-  flex-direction: row;
-  display: flex;
-  place-content: center;
-  align-items: center;
-}
-
-#rocks>* {
-  margin: 0 10px;
-  cursor: cell;
-}
-
-.rock {
-  width: 80px;
-}
-
-[draggable] {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  /* Required to make elements draggable in old WebKit */
-  -khtml-user-drag: element;
-  -webkit-user-drag: element;
 }
 
 #loading-screen {

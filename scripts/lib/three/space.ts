@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
+import { clicked } from 'clicked'
 
 import { helpers } from '../utils/helpers'
 import { COLORS, THREE_COLORS, TRACK } from '../utils/constants'
@@ -45,7 +46,7 @@ export class ThreeSpace {
         window.addEventListener('resize', this.onWindowResize)
 
         document.addEventListener('click', this.onTap, false)
-        document.addEventListener('touchend', this.onTap, false)
+        document.addEventListener('touchstart', this.onMobileTap, false)
     }
 
     private dom(): void {
@@ -228,9 +229,17 @@ export class ThreeSpace {
         }
     }
 
+    private onMobileTap = (e: TouchEvent) => {
+        this.handleTapEvent(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+    }
+
     private onTap = (e: MouseEvent) => {
-        this.mouse.x = (e.offsetX / this.renderer.domElement.offsetWidth) * 2 - 1
-        this.mouse.y = -(e.offsetY / this.renderer.domElement.offsetHeight) * 2 + 1
+        this.handleTapEvent(e.offsetX, e.offsetY)
+    }
+
+    private handleTapEvent(x: number, y: number) {
+        this.mouse.x = (x / this.renderer.domElement.offsetWidth) * 2 - 1
+        this.mouse.y = -(y / this.renderer.domElement.offsetHeight) * 2 + 1
 
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.targetList, true)
