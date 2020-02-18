@@ -1,33 +1,33 @@
 import { Howl } from 'howler'
 import * as THREE from 'three'
 
-import { COLORS } from '../utils/constants'
-
 export class player {
 
     howl: any
     id: string
+    intersect: THREE.Intersection
 
-    constructor(_track: Itrack, intersect: THREE.Intersection) {
+    constructor(_track: Itrack, _intersect: THREE.Intersection, _cubeMaterials: THREE.MeshBasicMaterial[], _clickedCubeMaterials: THREE.MeshBasicMaterial[]) {
         const that = this
+        this.intersect = _intersect
         let blobUrl = window.URL.createObjectURL(_track.file)
         this.howl = new Howl({
             src: [blobUrl],
             format: 'flac',
             onload: function () {
-                that.togglePlayingMesh(intersect.object, true)
+                that.togglePlayingMesh(_intersect.object, true, _cubeMaterials, _clickedCubeMaterials)
             },
             onend: function () {
-                that.togglePlayingMesh(intersect.object, false)
+                that.togglePlayingMesh(_intersect.object, false, _cubeMaterials, _clickedCubeMaterials)
             }
         })
     }
 
 
-    private togglePlayingMesh(object: THREE.Object3D, playing: boolean) {
+    private togglePlayingMesh(object: THREE.Object3D, playing: boolean, cubeMaterials, clickedCubeMaterials) {
         object.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
-                child.material = new THREE.MeshPhongMaterial({ color: (playing ? COLORS.BLACK : COLORS.RED2), specular: (playing ? COLORS.RED2 : COLORS.BLACK), shininess: 30 })
+                child.material = playing ? clickedCubeMaterials : cubeMaterials
             }
         })
     }

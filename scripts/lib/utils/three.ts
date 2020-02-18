@@ -1,4 +1,5 @@
 import { TRACK } from './constants'
+import { Material } from 'three'
 
 export class threeUtils {
     static hasOverlap(existingPositions: THREE.Vector3[], track_position: THREE.Vector3): Boolean {
@@ -16,4 +17,12 @@ export class threeUtils {
         }
         return overlapping
     }
+
+    static castMaterial(m: Material | Material[]): Material[] { 
+        if (Array.isArray(m)) {
+            return m as Material[]
+        } else {
+            return new Array(m)
+        }
+     }
 }

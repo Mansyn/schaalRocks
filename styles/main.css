@@ -18,6 +18,13 @@ body {
   color: #0E1C1C;
 }
 
+body {
+  background-image: url('/assets/img/splatter.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
 button:focus,
 img:focus,
 .lose-outline,
@@ -29,59 +36,56 @@ canvas {
   cursor: pointer;
 }
 
-.main-container {
-  background-image: url('/assets/img/splatter.svg');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
+.col-container {
+	height: 100%;
+  min-height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
+.col-container > div {
+		display: flex;
+		flex-direction: column;
+    justify-content: center;
+	}
+
+.col-container > .scene {
+		flex: 1;
+}
+  
 .head {
-  font-size: 47px;
-  height: 90px;
+  font-size: 50px;
+  height: 100px;
   color: #0E1C1C;
-  flex-direction: row;
-  display: flex;
-  place-content: center;
-  align-items: center;
   font-family: 'Jolly Lodger', cursive;
+  text-align: center;
 }
 
 .foot {
-  height: 90px;
+  height: 100px;
 }
 
-.fill-height{
+.row-container {
+	height: 100%;
   min-height: 100%;
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: row;
 }
 
-.fill-height > div {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.row-container > div {
+		display: flex;
+		flex-direction: row;
+    justify-content: center;
+    width: 100px;
+	}
+
+.row-container > .scene-container {
+    flex: 1;
+    width: auto !important;
 }
 
-#board {
-  display: flex;
-  flex: 7;
-  flex-direction: row;
-  justify-content: center;
-  -webkit-align-content: stretch;
-  align-content: stretch;
-}
-
-.dropzone {
-  width: 80%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+canvas {
   border: 14px double #0E1C1C;
-  background-color: rgba(158, 147, 147, 0.0);
 }
 
 #loading-screen {

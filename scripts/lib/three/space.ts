@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
-import { clicked } from 'clicked'
 
 import { helpers } from '../utils/helpers'
 import { COLORS, THREE_COLORS, TRACK } from '../utils/constants'
@@ -27,6 +26,16 @@ export class ThreeSpace {
     clock: THREE.Clock
     font: THREE.Font
 
+    ground: THREE.Texture
+
+    cubeSides: THREE.Texture[]
+    cubeTops: THREE.Texture[]
+    activeCubeSides: THREE.Texture[]
+    activeCubeTops: THREE.Texture[]
+
+    cubeMaterials: THREE.MeshBasicMaterial[]
+    activeCubeMaterials: THREE.MeshBasicMaterial[]
+
     existingPositions: THREE.Vector3[]
     trackList: Itrack[]
     targetList: THREE.Mesh[]
@@ -39,22 +48,19 @@ export class ThreeSpace {
     far: number
 
     constructor(_db: TrackDatabase) {
-        this.dom()
+        this.container = helpers.castDivElem(document.getElementsByClassName('scene-container')[0])
         this.db = _db
         this.existingPositions = []
+
+        this.cubeSides = []
+        this.cubeTops = []
+        this.activeCubeSides = []
+        this.activeCubeTops = []
 
         window.addEventListener('resize', this.onWindowResize)
 
         document.addEventListener('click', this.onTap, false)
         document.addEventListener('touchstart', this.onMobileTap, false)
-    }
-
-    private dom(): void {
-        this.container = helpers.castDivElem(document.createElement('div'))
-        this.container.setAttribute('id', 'scene-container')
-        this.container.setAttribute('class', 'dropzone')
-        this.container.setAttribute('style', 'min-height:400px')
-        document.getElementById('board').appendChild(this.container)
     }
 
     public load(): void {
@@ -88,6 +94,29 @@ export class ThreeSpace {
         fontLoader.load('assets/fonts/Reznor_Broken.json', function (response) {
             that.font = response
         })
+
+        const textureLoader = new THREE.TextureLoader(this.loadingManager)
+        // textureLoader.load('assets/img/textures/ground-tile.jpg', function (texture) {
+        //     that.ground = texture
+        // })
+        textureLoader.load('assets/img/textures/metal_side_1.jpg', function (texture) {
+            that.cubeSides.push(texture)
+        })
+        textureLoader.load('assets/img/textures/metal_side_2.jpg', function (texture) {
+            that.cubeSides.push(texture)
+        })
+        textureLoader.load('assets/img/textures/metal_top_1.jpg', function (texture) {
+            that.cubeTops.push(texture)
+        })
+        textureLoader.load('assets/img/textures/rust_side_1.jpg', function (texture) {
+            that.activeCubeSides.push(texture)
+        })
+        textureLoader.load('assets/img/textures/rust_side_2.jpg', function (texture) {
+            that.activeCubeSides.push(texture)
+        })
+        textureLoader.load('assets/img/textures/rust_top_1.jpg', function (texture) {
+            that.activeCubeTops.push(texture)
+        })
     }
 
     private init(): void {
@@ -98,7 +127,7 @@ export class ThreeSpace {
         this.mouse = new THREE.Vector2()
 
         this.scene = new THREE.Scene()
-        this.scene.background = THREE_COLORS.WHITE
+        this.scene.background = new THREE.Color(COLORS.WHITE)
         //this.scene.fog = THREE_FOG_COLORS.WHITE
         
         this.createCamera()
@@ -132,7 +161,7 @@ export class ThreeSpace {
     }
 
     private createLights(): void {
-        let light = new THREE.DirectionalLight(COLORS.WHITE)
+        let light = new THREE.DirectionalLight(COLORS.BLACK)
         light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z)
         light.castShadow = true
         light.shadow.camera.near = this.camera.near
@@ -144,12 +173,41 @@ export class ThreeSpace {
     }
 
     private loadModels(): void {
+
+        // this.ground.wrapS = this.ground.wrapT = THREE.RepeatWrapping
+        // this.ground.repeat.set(25, 25)
+        // this.ground.anisotropy = 16
+        // this.ground.encoding = THREE.sRGBEncoding
+
+        // const groundMaterial = new THREE.MeshLambertMaterial({ map: this.ground })
+
+        // let mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial)
+        // mesh.position.y = - 0
+        // mesh.rotation.x = - Math.PI / 2
+        // mesh.receiveShadow = true
+        // this.scene.add(mesh)
+
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
-        const track_material = new THREE.MeshPhongMaterial({ color: COLORS.RED2, specular: COLORS.BLACK, shininess: 30 })
+        
+        this.cubeMaterials = []
+        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[1] }))
+        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[1] }))
+        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeTops[0] }))
+        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeTops[0] }))
+        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[0] }))
+        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[0] }))
+
+        this.activeCubeMaterials = []
+        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[0] }))
+        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[0] }))
+        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeTops[0] }))
+        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[0] }))
+        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[1] }))
+        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[1] }))
 
         for (let i = 0; i < this.trackList.length; i++) {
-            let track_mesh = new THREE.Mesh(box_geometry, track_material)
+            let track_mesh = new THREE.Mesh(box_geometry, this.cubeMaterials)
             track_mesh.name = this.trackList[i].path
             track_mesh.position.copy(this.getPosition())
             this.existingPositions.push(track_mesh.position)
@@ -246,7 +304,7 @@ export class ThreeSpace {
 
         if (intersects.length > 0) {
             let _track = this.trackList.find((p) => p.path == intersects[0].object.name)
-            let _player = new player(_track, intersects[0])
+            let _player = new player(_track, intersects[0], this.cubeMaterials, this.activeCubeMaterials)
             _player.play()
         }
     }
