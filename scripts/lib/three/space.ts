@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { helpers } from '../utils/helpers'
-import { COLORS, THREE_COLORS, TRACK } from '../utils/constants'
+import { COLORS, THREE_COLORS, TRACK, THREE_SETTINGS } from '../utils/constants'
 import { player } from '../howl/player'
 import { threeUtils } from '../utils/three'
 import { TrackDatabase } from '../services/db'
@@ -28,14 +28,6 @@ export class ThreeSpace {
 
     ground: THREE.Texture
 
-    cubeSides: THREE.Texture[]
-    cubeTops: THREE.Texture[]
-    activeCubeSides: THREE.Texture[]
-    activeCubeTops: THREE.Texture[]
-
-    cubeMaterials: THREE.MeshBasicMaterial[]
-    activeCubeMaterials: THREE.MeshBasicMaterial[]
-
     existingPositions: THREE.Vector3[]
     trackList: Itrack[]
     targetList: THREE.Mesh[]
@@ -51,11 +43,6 @@ export class ThreeSpace {
         this.container = helpers.castDivElem(document.getElementsByClassName('scene-container')[0])
         this.db = _db
         this.existingPositions = []
-
-        this.cubeSides = []
-        this.cubeTops = []
-        this.activeCubeSides = []
-        this.activeCubeTops = []
 
         window.addEventListener('resize', this.onWindowResize)
 
@@ -96,26 +83,8 @@ export class ThreeSpace {
         })
 
         const textureLoader = new THREE.TextureLoader(this.loadingManager)
-        // textureLoader.load('assets/img/textures/ground-tile.jpg', function (texture) {
-        //     that.ground = texture
-        // })
-        textureLoader.load('assets/img/textures/metal_side_1.jpg', function (texture) {
-            that.cubeSides.push(texture)
-        })
-        textureLoader.load('assets/img/textures/metal_side_2.jpg', function (texture) {
-            that.cubeSides.push(texture)
-        })
-        textureLoader.load('assets/img/textures/metal_top_1.jpg', function (texture) {
-            that.cubeTops.push(texture)
-        })
-        textureLoader.load('assets/img/textures/rust_side_1.jpg', function (texture) {
-            that.activeCubeSides.push(texture)
-        })
-        textureLoader.load('assets/img/textures/rust_side_2.jpg', function (texture) {
-            that.activeCubeSides.push(texture)
-        })
-        textureLoader.load('assets/img/textures/rust_top_1.jpg', function (texture) {
-            that.activeCubeTops.push(texture)
+        textureLoader.load('assets/img/textures/ground-tile.jpg', function (texture) {
+            that.ground = texture
         })
     }
 
@@ -127,8 +96,8 @@ export class ThreeSpace {
         this.mouse = new THREE.Vector2()
 
         this.scene = new THREE.Scene()
-        this.scene.background = new THREE.Color(COLORS.WHITE)
-        //this.scene.fog = THREE_FOG_COLORS.WHITE
+        this.scene.background = THREE_COLORS.RED
+        this.scene.fog = new THREE.Fog(COLORS.RED, 400, 1400)
         
         this.createCamera()
         this.createLights()
@@ -161,53 +130,49 @@ export class ThreeSpace {
     }
 
     private createLights(): void {
-        let light = new THREE.DirectionalLight(COLORS.BLACK)
-        light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z)
-        light.castShadow = true
-        light.shadow.camera.near = this.camera.near
-        light.shadow.camera.far = this.camera.far
-        light.shadow.mapSize.width = 2000
-        light.shadow.mapSize.height = 2000
+        this.scene.add(new THREE.AmbientLight(COLORS.BLACK))
+
+        let light = new THREE.DirectionalLight(COLORS.WHITE, 1)
+        light.position.set(50, 200, 100)
+        light.position.multiplyScalar(1.3)
+
+        //light.castShadow = true
+
+        light.shadow.mapSize.width = 5000
+        light.shadow.mapSize.height = 5000
+
+        const d = 300
+
+        light.shadow.camera.left = -d
+        light.shadow.camera.right = d
+        light.shadow.camera.top = d
+        light.shadow.camera.bottom = -d
+
+        light.shadow.camera.far = 5000
 
         this.scene.add(light)
     }
 
     private loadModels(): void {
 
-        // this.ground.wrapS = this.ground.wrapT = THREE.RepeatWrapping
-        // this.ground.repeat.set(25, 25)
-        // this.ground.anisotropy = 16
-        // this.ground.encoding = THREE.sRGBEncoding
+        this.ground.wrapS = this.ground.wrapT = THREE.RepeatWrapping
+        this.ground.repeat.set(800, 800)
+        this.ground.anisotropy = THREE_SETTINGS.ANISOTROPY
+        this.ground.encoding = THREE.sRGBEncoding
 
-        // const groundMaterial = new THREE.MeshLambertMaterial({ map: this.ground })
+        let groundMaterial = new THREE.MeshLambertMaterial({ map: this.ground })
 
-        // let mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial)
-        // mesh.position.y = - 0
-        // mesh.rotation.x = - Math.PI / 2
-        // mesh.receiveShadow = true
-        // this.scene.add(mesh)
-
+        let mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial)
+        mesh.position.y = 0
+        mesh.rotation.x = - Math.PI / 2
+        mesh.receiveShadow = true
+        this.scene.add(mesh)
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
-        box_geometry.translate(0, 0.5, 0)
-        
-        this.cubeMaterials = []
-        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[1] }))
-        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[1] }))
-        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeTops[0] }))
-        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeTops[0] }))
-        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[0] }))
-        this.cubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.cubeSides[0] }))
-
-        this.activeCubeMaterials = []
-        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[0] }))
-        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[0] }))
-        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeTops[0] }))
-        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[0] }))
-        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[1] }))
-        this.activeCubeMaterials.push(new THREE.MeshBasicMaterial({ map: this.activeCubeSides[1] }))
+        //box_geometry.translate(0, 0.5, 0)
 
         for (let i = 0; i < this.trackList.length; i++) {
-            let track_mesh = new THREE.Mesh(box_geometry, this.cubeMaterials)
+
+            let track_mesh = new THREE.Mesh(box_geometry, new THREE.MeshStandardMaterial({ color: COLORS.WHITE }))
             track_mesh.name = this.trackList[i].path
             track_mesh.position.copy(this.getPosition())
             this.existingPositions.push(track_mesh.position)
@@ -215,21 +180,18 @@ export class ThreeSpace {
             track_mesh.scale.x = TRACK.WIDTH
             track_mesh.scale.y = this.trackList[i].file.size / 5000
             track_mesh.scale.z = TRACK.WIDTH
+            //track_mesh.castShadow = true
             track_mesh.updateMatrix()
             track_mesh.matrixAutoUpdate = false
 
-            const geom = new THREE.TextGeometry(this.trackList[i].name.toUpperCase(), {
+            const text_geom = new THREE.TextGeometry(this.trackList[i].name.toUpperCase(), {
                 font: this.font,
                 size: 10,
                 height: 1,
                 curveSegments: 30
             })
 
-            const text_material = new THREE.MeshStandardMaterial({
-                color: COLORS.BLACK
-            })
-                
-            let text_mesh = new THREE.Mesh(geom, text_material)
+            let text_mesh = new THREE.Mesh(text_geom, new THREE.MeshStandardMaterial({ color: COLORS.WHITE }))
             text_mesh.position.copy(new THREE.Vector3(track_mesh.position.x + 14, track_mesh.position.y, track_mesh.position.z + 5))
             text_mesh.rotateX(Math.PI / -2)
             this.existingPositions.push(text_mesh.position)
@@ -257,10 +219,8 @@ export class ThreeSpace {
 
         this.renderer.setPixelRatio(window.devicePixelRatio)
 
-        this.renderer.gammaFactor = 2.2
-        this.renderer.outputEncoding = THREE.GammaEncoding
-
-        this.renderer.physicallyCorrectLights = true
+        this.renderer.outputEncoding = THREE.sRGBEncoding
+        this.renderer.shadowMap.enabled = true
 
         this.container.appendChild(this.renderer.domElement)
     }
@@ -304,7 +264,7 @@ export class ThreeSpace {
 
         if (intersects.length > 0) {
             let _track = this.trackList.find((p) => p.path == intersects[0].object.name)
-            let _player = new player(_track, intersects[0], this.cubeMaterials, this.activeCubeMaterials)
+            let _player = new player(_track, intersects[0])
             _player.play()
         }
     }

@@ -9,7 +9,8 @@ export const COLORS = {
 
 export const THREE_COLORS = {
     WHITE: new THREE.Color(COLORS.WHITE),
-    BLACK: new THREE.Color(COLORS.BLACK)
+    BLACK: new THREE.Color(COLORS.BLACK),
+    RED: new THREE.Color(COLORS.RED)
 }
 
 export const THREE_FOG_COLORS = {
@@ -19,4 +20,8 @@ export const THREE_FOG_COLORS = {
 
 export const TRACK = {
     WIDTH: 20
+}
+
+export const THREE_SETTINGS = {
+    ANISOTROPY: 16
 }

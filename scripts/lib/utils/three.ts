@@ -1,5 +1,6 @@
-import { TRACK } from './constants'
+import { TRACK, COLORS } from './constants'
 import { Material } from 'three'
+import THREE = require('three')
 
 export class threeUtils {
     static hasOverlap(existingPositions: THREE.Vector3[], track_position: THREE.Vector3): Boolean {
@@ -24,5 +25,5 @@ export class threeUtils {
         } else {
             return new Array(m)
         }
-     }
+    }
 }
