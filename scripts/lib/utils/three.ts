@@ -9,7 +9,7 @@ export class threeUtils {
             let existing = existingPositions[i]
             let distance = track_position.distanceTo(existing)
 
-            if (distance < TRACK.WIDTH) {
+            if (distance < TRACK.WIDTH + 55) {
                 // They are overlapping
                 overlapping = true
                 // do not add to array
@@ -25,5 +25,13 @@ export class threeUtils {
         } else {
             return new Array(m)
         }
+    }
+
+    static togglePlayingMesh(object: THREE.Object3D, playing: boolean) {
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material = playing ? new THREE.MeshStandardMaterial({ color: COLORS.RED }) : new THREE.MeshStandardMaterial({ color: COLORS.WHITE })
+            }
+        })
     }
 }

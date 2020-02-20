@@ -97,7 +97,7 @@ export class ThreeSpace {
 
         this.scene = new THREE.Scene()
         this.scene.background = THREE_COLORS.RED
-        this.scene.fog = new THREE.Fog(COLORS.RED, 400, 1400)
+        this.scene.fog = new THREE.FogExp2(COLORS.RED, 0.001)
         
         this.createCamera()
         this.createLights()
@@ -130,27 +130,14 @@ export class ThreeSpace {
     }
 
     private createLights(): void {
-        this.scene.add(new THREE.AmbientLight(COLORS.BLACK))
+        var hemiLight = new THREE.HemisphereLight(COLORS.WHITE, 0x444444)
+        hemiLight.position.set(0, 200, 0)
+        this.scene.add(hemiLight)
 
-        let light = new THREE.DirectionalLight(COLORS.WHITE, 1)
-        light.position.set(50, 200, 100)
-        light.position.multiplyScalar(1.3)
+        var directionalLight = new THREE.DirectionalLight(COLORS.WHITE)
+        directionalLight.position.set(0, 200, 100)
 
-        //light.castShadow = true
-
-        light.shadow.mapSize.width = 5000
-        light.shadow.mapSize.height = 5000
-
-        const d = 300
-
-        light.shadow.camera.left = -d
-        light.shadow.camera.right = d
-        light.shadow.camera.top = d
-        light.shadow.camera.bottom = -d
-
-        light.shadow.camera.far = 5000
-
-        this.scene.add(light)
+        this.scene.add(directionalLight)
     }
 
     private loadModels(): void {
@@ -165,10 +152,10 @@ export class ThreeSpace {
         let mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial)
         mesh.position.y = 0
         mesh.rotation.x = - Math.PI / 2
-        mesh.receiveShadow = true
+        //mesh.receiveShadow = true
         this.scene.add(mesh)
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
-        //box_geometry.translate(0, 0.5, 0)
+        box_geometry.translate(0, 0.5, 0)
 
         for (let i = 0; i < this.trackList.length; i++) {
 
