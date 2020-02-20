@@ -34,4 +34,12 @@ export class threeUtils {
             }
         })
     }
+
+    static toggleLoopingMesh(object: THREE.Object3D, looping: boolean) {
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material = looping ? new THREE.MeshStandardMaterial({ color: COLORS.BLACK }) : new THREE.MeshStandardMaterial({ color: COLORS.WHITE })
+            }
+        })
+    }
 }

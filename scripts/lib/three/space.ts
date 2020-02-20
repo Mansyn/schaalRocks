@@ -3,7 +3,7 @@ import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { helpers } from '../utils/helpers'
 import { COLORS, THREE_COLORS, TRACK, THREE_SETTINGS } from '../utils/constants'
-import { player } from '../howl/player'
+import { HowlPlayer } from '../howl/player'
 import { threeUtils } from '../utils/three'
 import { TrackDatabase } from '../services/db'
 
@@ -25,24 +25,20 @@ export class ThreeSpace {
     mixers: any
     clock: THREE.Clock
     font: THREE.Font
-
     ground: THREE.Texture
 
     existingPositions: THREE.Vector3[]
     trackList: Itrack[]
     targetList: THREE.Mesh[]
     raycaster: THREE.Raycaster
-    mouse: THREE.Vector2
 
-    fov: number
-    aspect: number
-    near: number
-    far: number
+    howlers: HowlPlayer[]
 
     constructor(_db: TrackDatabase) {
         this.container = helpers.castDivElem(document.getElementsByClassName('scene-container')[0])
         this.db = _db
         this.existingPositions = []
+        this.howlers = []
 
         window.addEventListener('resize', this.onWindowResize)
 
@@ -93,7 +89,6 @@ export class ThreeSpace {
         this.targetList = []
         this.clock = new THREE.Clock()
         this.raycaster = new THREE.Raycaster()
-        this.mouse = new THREE.Vector2()
 
         this.scene = new THREE.Scene()
         this.scene.background = THREE_COLORS.RED
@@ -152,8 +147,8 @@ export class ThreeSpace {
         let mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial)
         mesh.position.y = 0
         mesh.rotation.x = - Math.PI / 2
-        //mesh.receiveShadow = true
         this.scene.add(mesh)
+
         let box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
         box_geometry.translate(0, 0.5, 0)
 
@@ -167,7 +162,7 @@ export class ThreeSpace {
             track_mesh.scale.x = TRACK.WIDTH
             track_mesh.scale.y = this.trackList[i].file.size / 5000
             track_mesh.scale.z = TRACK.WIDTH
-            //track_mesh.castShadow = true
+
             track_mesh.updateMatrix()
             track_mesh.matrixAutoUpdate = false
 
@@ -178,7 +173,7 @@ export class ThreeSpace {
                 curveSegments: 30
             })
 
-            let text_mesh = new THREE.Mesh(text_geom, new THREE.MeshStandardMaterial({ color: COLORS.WHITE }))
+            let text_mesh = new THREE.Mesh(text_geom, new THREE.LineBasicMaterial({ color: COLORS.WHITE }))
             text_mesh.position.copy(new THREE.Vector3(track_mesh.position.x + 14, track_mesh.position.y, track_mesh.position.z + 5))
             text_mesh.rotateX(Math.PI / -2)
             this.existingPositions.push(text_mesh.position)
@@ -243,16 +238,41 @@ export class ThreeSpace {
     }
 
     private handleTapEvent(x: number, y: number) {
-        this.mouse.x = (x / this.renderer.domElement.offsetWidth) * 2 - 1
-        this.mouse.y = -(y / this.renderer.domElement.offsetHeight) * 2 + 1
+        var vector = new THREE.Vector3(
+            (x / this.renderer.domElement.offsetWidth) * 2 - 1,
+            -(y / this.renderer.domElement.offsetHeight) * 2 + 1, 0)
+        
+        vector.unproject(this.camera)
+        this.raycaster.set(this.camera.position, vector.sub(this.camera.position).normalize())
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.targetList, true)
 
         if (intersects.length > 0) {
-            let _track = this.trackList.find((p) => p.path == intersects[0].object.name)
-            let _player = new player(_track, intersects[0])
-            _player.play()
+            const _track = this.trackList.find((p) => p.path == intersects[0].object.name)
+            let _player = this.howlers.find((p) => p.name == _track.name)
+
+            if (!_player) {
+                _player = new HowlPlayer(_track, intersects[0])
+                this.howlers.push(_player)
+            }
+            
+            var index = Math.floor(intersects[0].faceIndex / 2)
+            switch (index) {
+                case 0:
+                case 1:
+                case 4:
+                case 5:
+                    // play
+                    _player.stop()
+                    _player.play()
+                    break;
+                case 2:
+                case 3:
+                    // repeat
+                    _player.toggleRepeat()
+                    break;
+            }
+
         }
     }
 }

@@ -2,8 +2,8 @@ import * as THREE from 'three'
 
 export const COLORS = {
     WHITE: 0xFFFFFF,
-    BLACK: 0x0E1C1C,
-    RED: 0xA22825,
+    BLACK: 0x000000,
+    RED: 0x930000,
     RED2: 0xD31204
 }
 
