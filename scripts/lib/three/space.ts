@@ -138,7 +138,7 @@ export class ThreeSpace {
     private loadModels(): void {
 
         this.ground.wrapS = this.ground.wrapT = THREE.RepeatWrapping
-        this.ground.repeat.set(800, 800)
+        this.ground.repeat.set(18, 18)
         this.ground.anisotropy = THREE_SETTINGS.ANISOTROPY
         this.ground.encoding = THREE.sRGBEncoding
 
@@ -174,6 +174,7 @@ export class ThreeSpace {
             })
 
             let text_mesh = new THREE.Mesh(text_geom, new THREE.LineBasicMaterial({ color: COLORS.WHITE }))
+            text_mesh.name = this.trackList[i].path + '_text'
             text_mesh.position.copy(new THREE.Vector3(track_mesh.position.x + 14, track_mesh.position.y, track_mesh.position.z + 5))
             text_mesh.rotateX(Math.PI / -2)
             this.existingPositions.push(text_mesh.position)
@@ -230,18 +231,22 @@ export class ThreeSpace {
     }
 
     private onMobileTap = (e: TouchEvent) => {
-        this.handleTapEvent(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+        let vector = new THREE.Vector3(
+            (e.targetTouches[0].pageX / window.innerWidth) * 2 - 1,
+            -(e.targetTouches[0].pageY / window.innerHeight) * 2 + 1, 0)
+        
+        this.handleTapEvent(vector)
     }
 
     private onTap = (e: MouseEvent) => {
-        this.handleTapEvent(e.offsetX, e.offsetY)
+        let vector = new THREE.Vector3(
+            (e.offsetX / this.renderer.domElement.offsetWidth) * 2 - 1,
+            -(e.offsetY / this.renderer.domElement.offsetHeight) * 2 + 1, 0)
+        
+        this.handleTapEvent(vector)
     }
 
-    private handleTapEvent(x: number, y: number) {
-        var vector = new THREE.Vector3(
-            (x / this.renderer.domElement.offsetWidth) * 2 - 1,
-            -(y / this.renderer.domElement.offsetHeight) * 2 + 1, 0)
-        
+    private handleTapEvent(vector: THREE.Vector3) {
         vector.unproject(this.camera)
         this.raycaster.set(this.camera.position, vector.sub(this.camera.position).normalize())
 
@@ -252,7 +257,8 @@ export class ThreeSpace {
             let _player = this.howlers.find((p) => p.name == _track.name)
 
             if (!_player) {
-                _player = new HowlPlayer(_track, intersects[0])
+                const intersect_text = this.scene.getObjectByName(intersects[0].object.name + '_text')
+                _player = new HowlPlayer(_track, intersects[0].object, intersect_text)
                 this.howlers.push(_player)
             }
             

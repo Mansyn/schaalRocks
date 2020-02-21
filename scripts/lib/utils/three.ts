@@ -27,18 +27,28 @@ export class threeUtils {
         }
     }
 
-    static togglePlayingMesh(object: THREE.Object3D, playing: boolean) {
+    static togglePlayingMesh(object: THREE.Object3D, text: THREE.Object3D, playing: boolean) {
         object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material = playing ? new THREE.MeshStandardMaterial({ color: COLORS.RED }) : new THREE.MeshStandardMaterial({ color: COLORS.WHITE })
+            }
+        })
+        text.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
                 child.material = playing ? new THREE.MeshStandardMaterial({ color: COLORS.RED }) : new THREE.MeshStandardMaterial({ color: COLORS.WHITE })
             }
         })
     }
 
-    static toggleLoopingMesh(object: THREE.Object3D, looping: boolean) {
+    static toggleLoopingMesh(object: THREE.Object3D, text: THREE.Object3D, looping: boolean) {
         object.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
                 child.material = looping ? new THREE.MeshStandardMaterial({ color: COLORS.BLACK }) : new THREE.MeshStandardMaterial({ color: COLORS.WHITE })
+            }
+        })
+        text.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material = looping ? new THREE.MeshStandardMaterial({ color: COLORS.RED }) : new THREE.MeshStandardMaterial({ color: COLORS.WHITE })
             }
         })
     }
