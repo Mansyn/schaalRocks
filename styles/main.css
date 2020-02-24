@@ -55,14 +55,14 @@ canvas {
   
 .head {
   font-size: 50px;
-  height: 100px;
+  height: 14%;
   color: #0E1C1C;
   font-family: 'Jolly Lodger', cursive;
   text-align: center;
 }
 
 .foot {
-  height: 100px;
+  height: 14%;
 }
 
 .row-container {
@@ -76,7 +76,7 @@ canvas {
 		display: flex;
 		flex-direction: row;
     justify-content: center;
-    width: 100px;
+    width: 12%;
 	}
 
 .row-container > .scene-container {
@@ -171,4 +171,17 @@ canvas {
         -ms-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+}
+
+/* Portrait and Landscape */
+@media screen and (max-device-width: 640px){
+
+    .row-container > div {
+      width: 4% !important;
+    }
+
+    .foot {
+      height: 4% !important;
+    }
+
 }
